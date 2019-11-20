@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\BLL",
+    "\\BLL\\Models",
+    "\\BLL\\Services",
+    "\\DAL",
+    "\\DAL\\Migrations",
+    "\\WebApplication",
+    "\\WebApplication\\Properties"
+  ],
+  "SelectedNode": "\\WebApplication\\WebApplication.sln",
+  "PreviewInSolutionExplorer": false
+}

@@ -1,0 +1,24 @@
+﻿
+using System;
+using DAL;
+using BLL.Services;
+using AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+
+namespace BLL
+{
+    static public class Dependencies
+    {
+        public static void RegisterDependencies(this IServiceCollection services, string con)
+        {
+            services.AddAutoMapper();
+            DAL.Dependencies.RegisterDependencies(services, con);
+            services.AddScoped<IAuthorService, AuthorService>();
+            services.AddScoped<IGenreService, GenreService>();
+            services.AddScoped<IBookService, BookService>();
+            Console.WriteLine("Dependency Injection from BLL");
+
+        }
+    }
+}
