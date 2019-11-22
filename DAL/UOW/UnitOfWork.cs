@@ -13,7 +13,7 @@ namespace DAL.UOW
         public IRepository<User> UserRepository { get; }
         public IAuthorRepository AuthorRepository { get; }
 
-        public IRepository<Genre> GenreRepository { get; }
+        public IGenreRepository GenreRepository { get; }
 
         public IBookRepository BookRepository { get; }
 
@@ -21,7 +21,7 @@ namespace DAL.UOW
 
         public IRepository<BookGenre> BookGenreRepository { get; }
 
-        public UnitOfWork(AppContext ac, IAuthorRepository authorRepository, IRepository<Genre> genreRepository,
+        public UnitOfWork(AppContext ac, IAuthorRepository authorRepository, IGenreRepository genreRepository,
            IBookRepository bookRepository, IRepository<BookAuthor> bookAuthorRepository, IRepository<BookGenre> bookGenreRepository,
            IRepository<User> userRepository) 
         {

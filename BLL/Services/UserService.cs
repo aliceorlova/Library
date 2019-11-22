@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Diagnostics;
 
 namespace BLL.Services
 {
@@ -24,6 +25,7 @@ namespace BLL.Services
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password)) return null;
 
             var users = await unitOfWork.UserRepository.GetAll();
+           
             var user = mapper.Map<User>(users.SingleOrDefault(x => x.Email == username));
 
             // check if username exists
@@ -35,13 +37,12 @@ namespace BLL.Services
             // authentication successful
             return user;
         }
-
+       
         public async Task<User> Create(User user, string password)
         {
             // validation
-            //  if (string.IsNullOrWhiteSpace(password)) throw new AppException("Password is required");
-
-            //   if (_context.Users.Any(x => x.Username == user.Username)) throw new AppException("Username \"" + user.Username + "\" is already taken");
+            if (string.IsNullOrWhiteSpace(password)) throw new AppException("Password is required");
+            if(unitOfWork.UserRepository.GetAll().Result.Any(u => u.Email == user.Email)) throw new AppException("Username \"" + user.Email + "\" is already taken");
 
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
@@ -50,8 +51,8 @@ namespace BLL.Services
             user.PasswordSalt = passwordSalt;
 
             var u = mapper.Map<DAL.Entities.User>(user);
-
-            unitOfWork.UserRepository.Create(u);
+            
+                unitOfWork.UserRepository.Create(u);
             await unitOfWork.Save();
 
             return mapper.Map<User>(u);
@@ -81,13 +82,13 @@ namespace BLL.Services
         {
             var user = await unitOfWork.UserRepository.GetById(userParam.UserId);
             var users = await unitOfWork.UserRepository.GetAll();
-            //   if (user == null) throw new AppException("User not found");
+            if (user == null) throw new AppException("User not found");
 
             // update username if it has changed
             if (!string.IsNullOrWhiteSpace(userParam.Email) && userParam.Email != user.Email)
             {
                 // throw error if the new username is already taken
-                //  if (users.Any(x => x.Email == userParam.Email)) throw new AppException("Username " + userParam.Username + " is already taken");
+                if (users.Any(x => x.Email == userParam.Email)) throw new AppException("Username " + userParam.Email + " is already taken");
 
                 user.Email = userParam.Email;
             }

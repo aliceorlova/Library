@@ -16,14 +16,15 @@ namespace DAL
         {
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IAuthorRepository, AuthorRepository>();
-            services.AddScoped<IRepository<Genre>, Repository<Genre>>();
+            services.AddScoped<IGenreRepository, GenreRepository>();
             services.AddScoped<IBookRepository, BookRepository>();
             services.AddScoped<IRepository<BookAuthor>,Repository<BookAuthor>>();
             services.AddScoped<IRepository<BookGenre>,Repository<BookGenre>>();
             services.AddScoped<IRepository<User>, Repository<User>>();
+            services.AddScoped<IBookingRepository, BookingRepository>();
+
             Console.WriteLine("Dependency Injection from DAL");
             services.AddDbContext<AppContext>(option => option.UseSqlServer(con));
-
         }
     }
 }

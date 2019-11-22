@@ -14,7 +14,5 @@ namespace BLL.IServices
         Task<User> Create(User user, string password);
         Task Update(User userParam, string password = null);
         Task Delete(int id);
-
-
     }
 }

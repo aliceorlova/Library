@@ -18,8 +18,8 @@ namespace BLL
             services.AddScoped<IAuthorService, AuthorService>();
             services.AddScoped<IGenreService, GenreService>();
             services.AddScoped<IBookService, BookService>();
+            services.AddScoped<IUserService, UserService>();
             Console.WriteLine("Dependency Injection from BLL");
-
         }
     }
 }

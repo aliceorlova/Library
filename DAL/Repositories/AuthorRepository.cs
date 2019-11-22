@@ -19,8 +19,7 @@ namespace DAL.Repositories
 
         public async Task<IEnumerable<Author>> GetAuthors()
         {
-            return await context.Authors.AsNoTracking().Include(a => a.BookAuthors).ThenInclude(a => a.Book).ToListAsync();
-
+            return await context.Authors.Include(a => a.BookAuthors).ThenInclude(a => a.Book).ToListAsync();
         }
     }
 }

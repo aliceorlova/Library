@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using BLL.IServices;
+using BLL.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using WebApplication.AuthModels;
 
 namespace WebApplication.Controllers
@@ -16,22 +22,23 @@ namespace WebApplication.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserService _service;
+        private IUserService _service;
         private readonly AppSettings _appSettings;
-        public UsersController(IUserService service, IOptions<AppSettings> appSettings)
+        private IMapper _mapper;
+        public UsersController(IUserService service, IOptions<AppSettings> appSettings, IMapper mapper)
         {
             _service = service;
             _appSettings = appSettings.Value;
+            _mapper = mapper;
         }
-        /*
+
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody]AuthenticateModel model)
+        public async Task<IActionResult> Authenticate([FromBody]AuthenticateModel model)
         {
-            var user = _service.Authenticate(model.Email, model.Password);
+            var user = await _service.Authenticate(model.Email, model.Password);
 
-            if (user == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
+            if (user == null) return BadRequest(new { message = "Username or password is incorrect" });
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
@@ -39,7 +46,7 @@ namespace WebApplication.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString())
+                    new Claim(ClaimTypes.Name, user.UserId.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -50,20 +57,39 @@ namespace WebApplication.Controllers
             // return basic user info and authentication token
             return Ok(new
             {
-                Id = user.Id,
-                Username = user.Username,
+                Id = user.UserId,
+                Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Token = tokenString
             });
         }
-        */
+
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody]RegisterModel model)
+        {
+            // map model to entity
+            var user = _mapper.Map<User>(model);
+            try
+            {
+                // create user
+                await _service.Create(user, model.Password);
+                return Ok();
+            }
+            catch (BLL.AppException ex)
+            {
+                // return error message if there was an exception
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 
         // GET: api/Users
+        [AllowAnonymous]
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<ActionResult> GetAll()
         {
-            return new string[] { "value1", "value2" };
+            return Ok(await _service.GetAll());
         }
 
         // GET: api/Users/5
