@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BLL.Services
+namespace BLL.IServices
 {
     public interface IGenreService
     {

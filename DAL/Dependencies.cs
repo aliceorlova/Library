@@ -15,11 +15,12 @@ namespace DAL
         public static void RegisterDependencies(this IServiceCollection services, string con)
         {
             services.AddTransient<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IRepository<Author>, Repository<Author>>();
+            services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<IRepository<Genre>, Repository<Genre>>();
             services.AddScoped<IBookRepository, BookRepository>();
             services.AddScoped<IRepository<BookAuthor>,Repository<BookAuthor>>();
             services.AddScoped<IRepository<BookGenre>,Repository<BookGenre>>();
+            services.AddScoped<IRepository<User>, Repository<User>>();
             Console.WriteLine("Dependency Injection from DAL");
             services.AddDbContext<AppContext>(option => option.UseSqlServer(con));
 

@@ -5,6 +5,7 @@ using BLL.Services;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using BLL.IServices;
 
 namespace BLL
 {

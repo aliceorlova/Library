@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using BLL.IServices;
 using BLL.Models;
 using DAL.UOW;
 
@@ -17,7 +18,7 @@ namespace BLL.Services
             this.mapper = mapper;
             unitOfWork = uow;
         }
-        // need it to get the valid id
+        
         public async Task<Genre> Add(Genre genre)
         {
             var a = mapper.Map<DAL.Entities.Genre>(genre);
@@ -28,7 +29,7 @@ namespace BLL.Services
 
         public async Task<IEnumerable<Genre>> GetAll()
         {
-            return mapper.Map<List<Genre>>(await unitOfWork.GenreRepository.GetAll());
+            return mapper.Map<IEnumerable<Genre>>(await unitOfWork.GenreRepository.GetAll());
         }
 
         public async Task<Genre> GetById(int id)

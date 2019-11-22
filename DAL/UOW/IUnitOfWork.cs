@@ -9,13 +9,13 @@ namespace DAL.UOW
 {
     public interface IUnitOfWork
     {
-        // IRepository<User> UserRepository { get; set; }
+        IRepository<User> UserRepository { get; }
         IRepository<Genre> GenreRepository { get; }
         IBookRepository BookRepository { get; }
         IRepository<BookAuthor> BookAuthorRepository { get; }
         IRepository<BookGenre> BookGenreRepository { get; }
         //IRepository<Booking> BookingRepository { get; }
-        IRepository<Author> AuthorRepository { get; }
+        IAuthorRepository AuthorRepository { get; }
         Task Save();
     }
 }

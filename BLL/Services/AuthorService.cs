@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BLL.IServices;
 using BLL.Models;
 using DAL.UOW;
 using System;
@@ -29,7 +30,7 @@ namespace BLL.Services
 
         public async Task<IEnumerable<Author>> GetAll()
         {
-            return mapper.Map<List<Author>>(await unitOfWork.AuthorRepository.GetAll());
+            return mapper.Map<IEnumerable<Author>>(await unitOfWork.AuthorRepository.GetAuthors());
 
         }
         public async Task<Author> GetById(int id)
