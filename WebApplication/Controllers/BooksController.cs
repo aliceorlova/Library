@@ -67,15 +67,18 @@ namespace WebApplication.Controllers
         }
         // PUT: api/Books/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {   
-            
+        public async Task<IActionResult> Put(int id, [FromBody] BLL.Models.Book book)
+        {
+            await service.Update(id, book);
+            return Ok();
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            await service.Delete(id);
+            return Ok();
         }
     }
 }

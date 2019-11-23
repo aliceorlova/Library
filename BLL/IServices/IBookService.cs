@@ -15,5 +15,7 @@ namespace BLL.IServices
         public Task AddAuthor(int id, Author author);
         public Task AddGenres(int id, ICollection<Genre> genres);
         public Task AddGenre(int id, Genre genre);
+        Task Delete(int id);
+        Task Update(int id, Book book);
     }
 }

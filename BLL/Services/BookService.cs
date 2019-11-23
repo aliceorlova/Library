@@ -50,6 +50,12 @@ namespace BLL.Services
             await unitOfWork.Save();
         }
 
+        public async Task Delete(int id)
+        {
+            unitOfWork.BookRepository.Delete(await unitOfWork.BookRepository.GetById(id));
+            await unitOfWork.Save();
+        }
+
         public async Task<IEnumerable<Book>> GetAll()
         {
             return mapper.Map<IEnumerable<Book>>(await unitOfWork.BookRepository.GetBooks());
@@ -58,6 +64,18 @@ namespace BLL.Services
         public async Task<Book> GetById(int id)
         {
             return mapper.Map<Book>(await unitOfWork.BookRepository.GetBookById(id));
+        }
+
+        public async Task Update(int id, Book book)
+        {
+            var existing = await unitOfWork.BookRepository.GetById(id);
+            //  if (existing== null) return error
+            existing.Name = book.Name;
+            existing.BookYear = book.BookYear;
+            existing.NumberAvailable = book.NumberAvailable;
+           
+            unitOfWork.BookRepository.Update(existing);
+            await unitOfWork.Save();
         }
     }
 }

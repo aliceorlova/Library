@@ -40,14 +40,17 @@ namespace WebApplication.Controllers
 
         // PUT: api/Bookings/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, [FromBody] BLL.Models.Booking booking)
         {
+            await _service.Update(id, booking);
+            return Ok();
         }
-
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            await _service.Delete(id);
+            return Ok();
         }
     }
 }

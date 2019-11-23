@@ -27,6 +27,12 @@ namespace BLL.Services
             return mapper.Map<Genre>(a);
         }
 
+        public async Task Delete(int id)
+        {
+            unitOfWork.GenreRepository.Delete(await unitOfWork.GenreRepository.GetById(id));
+            await unitOfWork.Save();
+        }
+
         public async Task<IEnumerable<Genre>> GetAll()
         {
             return mapper.Map<IEnumerable<Genre>>(await unitOfWork.GenreRepository.GetAll());
@@ -35,6 +41,15 @@ namespace BLL.Services
         public async Task<Genre> GetById(int id)
         {
             return mapper.Map<Genre>(await unitOfWork.GenreRepository.GetById(id));
+        }
+
+        public async Task Update(int id, Genre genre)
+        {
+            var existing = await unitOfWork.GenreRepository.GetById(id);
+            //  if (existing== null) return error
+            existing.Name = genre.Name;
+            unitOfWork.GenreRepository.Update(existing);
+            await unitOfWork.Save();
         }
     }
 }

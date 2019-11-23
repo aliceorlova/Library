@@ -11,5 +11,7 @@ namespace BLL.IServices
         Task<IEnumerable<Genre>> GetAll();
         Task<Genre> GetById(int id);
         Task<Genre> Add(Genre genre);
+        Task Delete(int id);
+        Task Update(int id, Genre genre);
     }
 }

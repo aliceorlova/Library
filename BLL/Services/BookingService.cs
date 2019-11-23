@@ -32,6 +32,12 @@ namespace BLL.Services
             return _mapper.Map<Booking>(b);
         }
 
+        public async Task Delete(int id)
+        {
+            _unitOfWork.BookingRepository.Delete(await _unitOfWork.BookingRepository.GetById(id));
+            await _unitOfWork.Save();
+        }
+
         public async Task<IEnumerable<Booking>> GetAll()
         {
             return _mapper.Map<IEnumerable<Booking>>(await _unitOfWork.BookingRepository.GetBookings());
@@ -40,6 +46,17 @@ namespace BLL.Services
         public async Task<Booking> GetById(int id)
         {
             return _mapper.Map<Booking>(await _unitOfWork.BookingRepository.GetBookingById(id));
+        }
+        // can i change ids of user and book ?
+        public async Task Update(int id, Booking booking)
+        {
+            var existing = await _unitOfWork.BookingRepository.GetById(id);
+            //  if (existing== null) return error
+            existing.User = _mapper.Map<DAL.Entities.User>(booking.User);
+            existing.Book = _mapper.Map<DAL.Entities.Book>(booking.Book);
+
+            _unitOfWork.BookingRepository.Update(existing);
+            await _unitOfWork.Save();
         }
     }
 }

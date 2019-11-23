@@ -13,6 +13,5 @@ namespace BLL.IServices
         Task<Author> Add(Author author);
         Task Delete(int id);
         Task Update(int id, Author author);
-
     }
 }

@@ -101,20 +101,26 @@ namespace WebApplication.Controllers
 
         // POST: api/Users
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] BLL.Models.User user)
         {
+            //   return Ok(await _service.(user));
+            return Ok();
         }
 
         // PUT: api/Users/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, [FromBody] BLL.Models.User user)
         {
+            await _service.Update(user);
+            return Ok();
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            await _service.Delete(id);
+            return Ok();
         }
     }
 }

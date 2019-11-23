@@ -11,5 +11,7 @@ namespace BLL.IServices
         public Task<IEnumerable<Booking>> GetAll();
         public Task<Booking> GetById(int id);
         Task<Booking> Add(Booking booking);
+        Task Delete(int id);
+        Task Update(int id, Booking booking);
     }
 }
