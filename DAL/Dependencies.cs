@@ -7,6 +7,7 @@ using System.Text;
 using DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using DAL.IRepositories;
 
 namespace DAL
 {
@@ -22,7 +23,7 @@ namespace DAL
             services.AddScoped<IRepository<BookGenre>,Repository<BookGenre>>();
             services.AddScoped<IRepository<User>, Repository<User>>();
             services.AddScoped<IBookingRepository, BookingRepository>();
-
+            
             Console.WriteLine("Dependency Injection from DAL");
             services.AddDbContext<AppContext>(option => option.UseSqlServer(con));
         }

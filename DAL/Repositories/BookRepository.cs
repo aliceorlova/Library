@@ -5,6 +5,7 @@ using System.Text;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using DAL.IRepositories;
 
 namespace DAL.Repositories
 {
@@ -49,7 +50,6 @@ namespace DAL.Repositories
         public async Task<Book> GetBookById(int id)
         {
             return await context.Books.Where(b => b.BookId == id).Include(b => b.BookAuthors).ThenInclude(a => a.Author).Include(b => b.BookGenres).ThenInclude(g => g.Genre).FirstAsync();
-
         }
 
         public async Task<IEnumerable<Book>> GetBooks()

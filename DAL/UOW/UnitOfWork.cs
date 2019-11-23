@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Entities;
-using DAL.Repositories;
+using DAL.IRepositories;
 
 namespace DAL.UOW
 {
@@ -20,10 +20,11 @@ namespace DAL.UOW
         public IRepository<BookAuthor> BookAuthorRepository { get; }
 
         public IRepository<BookGenre> BookGenreRepository { get; }
+        public IBookingRepository BookingRepository { get; }
 
         public UnitOfWork(AppContext ac, IAuthorRepository authorRepository, IGenreRepository genreRepository,
            IBookRepository bookRepository, IRepository<BookAuthor> bookAuthorRepository, IRepository<BookGenre> bookGenreRepository,
-           IRepository<User> userRepository) 
+           IRepository<User> userRepository, IBookingRepository bookingRepository) 
         {
             context = ac;
             AuthorRepository = authorRepository;
@@ -32,6 +33,7 @@ namespace DAL.UOW
             BookAuthorRepository = bookAuthorRepository;
             BookGenreRepository = bookGenreRepository;
             UserRepository = userRepository;
+            BookingRepository = bookingRepository;
         }
         public async Task Save()
         {

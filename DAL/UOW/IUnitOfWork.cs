@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using DAL.IRepositories;
 
 namespace DAL.UOW
 {
@@ -14,7 +15,7 @@ namespace DAL.UOW
         IBookRepository BookRepository { get; }
         IRepository<BookAuthor> BookAuthorRepository { get; }
         IRepository<BookGenre> BookGenreRepository { get; }
-        //IRepository<Booking> BookingRepository { get; }
+        IBookingRepository BookingRepository { get; }
         IAuthorRepository AuthorRepository { get; }
         Task Save();
     }

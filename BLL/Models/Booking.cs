@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace BLL.Models
 {
-    class Booking
+    public class Booking
     {
         public int BookingId { get; set; }
+        [Required]
         public Book Book { get; set; }
+        [Required]
         public User User { get; set; }
-        public bool isFinished { get; set; }
+        public bool isFinished { get; set; } = false;
     }
 }

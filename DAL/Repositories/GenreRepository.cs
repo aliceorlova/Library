@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DAL.IRepositories;
 
 namespace DAL.Repositories
 {
@@ -20,7 +21,6 @@ namespace DAL.Repositories
         public async Task<IEnumerable<Genre>> GetGenres()
         {
             return await context.Genres.AsNoTracking().Include(a => a.BookGenres).ThenInclude(a => a.Genre).ToListAsync();
-
         }
     }
 }

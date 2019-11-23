@@ -19,6 +19,8 @@ namespace BLL
             services.AddScoped<IGenreService, GenreService>();
             services.AddScoped<IBookService, BookService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IBookingService, BookingService>();
+
             Console.WriteLine("Dependency Injection from BLL");
         }
     }
