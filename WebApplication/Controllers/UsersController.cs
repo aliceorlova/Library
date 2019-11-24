@@ -98,6 +98,12 @@ namespace WebApplication.Controllers
         {
             return "value";
         }
+        [AllowAnonymous]
+        [HttpGet("{id}/GetBookings")]
+        public async Task<ActionResult> GetBookings(int id)
+        {
+            return Ok(await _service.GetBookings(id));
+        }
 
         // POST: api/Users
         [HttpPost]

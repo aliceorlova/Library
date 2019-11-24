@@ -12,7 +12,7 @@ namespace BLL.Models
         public string Email { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
-        public bool isBlocked { get; set; } 
-        //   public ICollection<Booking> Bookings { get; set; }
+        public bool isBlocked { get; set; }
+        public ICollection<Booking> Bookings { get; set; }
     }
 }

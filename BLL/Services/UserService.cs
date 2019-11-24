@@ -25,7 +25,7 @@ namespace BLL.Services
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password)) return null;
 
             var users = await unitOfWork.UserRepository.GetAll();
-           
+
             var user = mapper.Map<User>(users.SingleOrDefault(x => x.Email == username));
 
             // check if username exists
@@ -37,12 +37,12 @@ namespace BLL.Services
             // authentication successful
             return user;
         }
-       
+
         public async Task<User> Create(User user, string password)
         {
             // validation
             if (string.IsNullOrWhiteSpace(password)) throw new AppException("Password is required");
-            if(unitOfWork.UserRepository.GetAll().Result.Any(u => u.Email == user.Email)) throw new AppException("Username \"" + user.Email + "\" is already taken");
+            if (unitOfWork.UserRepository.GetAll().Result.Any(u => u.Email == user.Email)) throw new AppException("Username \"" + user.Email + "\" is already taken");
 
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
@@ -51,8 +51,8 @@ namespace BLL.Services
             user.PasswordSalt = passwordSalt;
 
             var u = mapper.Map<DAL.Entities.User>(user);
-            
-                unitOfWork.UserRepository.Create(u);
+
+            unitOfWork.UserRepository.Create(u);
             await unitOfWork.Save();
 
             return mapper.Map<User>(u);
@@ -136,6 +136,14 @@ namespace BLL.Services
                 }
             }
             return true;
+        }
+
+        public async Task<IEnumerable<Booking>> GetBookings(int id)
+        {
+            var bookings = await unitOfWork.BookingRepository.GetBookings();
+            if (bookings == null) throw new AppException("Null Bookings");
+            var res = bookings.Where(b => b.User.UserId == id);
+            return mapper.Map<IEnumerable<Booking>>(res);
         }
     }
 }

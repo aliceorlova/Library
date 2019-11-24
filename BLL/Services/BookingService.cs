@@ -23,10 +23,11 @@ namespace BLL.Services
         {
             var bookDal = await _unitOfWork.BookRepository.GetBookById(booking.Book.BookId);
             var userDal = await _unitOfWork.UserRepository.GetById(booking.User.UserId);
-            
+            if (userDal.Bookings.Count > 5) throw new AppException("Too many books.");
+            if (userDal.isBlocked == true) throw new AppException("User is blocked.");
             var b = new DAL.Entities.Booking { Book = bookDal, User = userDal, isFinished = false };
-            Console.WriteLine("BOOKING" + b.BookingId);
-          //  var bookingDal = _mapper.Map<DAL.Entities.Booking>(b);
+            
+
             _unitOfWork.BookingRepository.Create(b);
             await _unitOfWork.Save();
             return _mapper.Map<Booking>(b);
@@ -51,7 +52,7 @@ namespace BLL.Services
         public async Task Update(int id, Booking booking)
         {
             var existing = await _unitOfWork.BookingRepository.GetById(id);
-            //  if (existing== null) return error
+            if (existing == null) throw new AppException("The booking you are trying to update does not exist.");
             existing.User = _mapper.Map<DAL.Entities.User>(booking.User);
             existing.Book = _mapper.Map<DAL.Entities.Book>(booking.Book);
 
