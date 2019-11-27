@@ -33,7 +33,7 @@ namespace WebApplication.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("authenticate")]
+        [HttpPost("Authenticate")]
         public async Task<IActionResult> Authenticate([FromBody]AuthenticateModel model)
         {
             var user = await _service.Authenticate(model.Email, model.Password);
@@ -66,7 +66,7 @@ namespace WebApplication.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("register")]
+        [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody]RegisterModel model)
         {
             // map model to entity
@@ -94,9 +94,9 @@ namespace WebApplication.Controllers
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ActionResult> GetById(int id)
         {
-            return "value";
+            return Ok(await _service.GetById(id));
         }
         [AllowAnonymous]
         [HttpGet("{id}/GetBookings")]
@@ -105,14 +105,14 @@ namespace WebApplication.Controllers
             return Ok(await _service.GetBookings(id));
         }
 
-        // POST: api/Users
+     /*   // POST: api/Users
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] BLL.Models.User user)
         {
             //   return Ok(await _service.(user));
             return Ok();
         }
-
+        */
         // PUT: api/Users/5
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] BLL.Models.User user)
