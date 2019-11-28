@@ -13,5 +13,6 @@ namespace BLL.IServices
         Task<Booking> Add(Booking booking);
         Task Delete(int id);
         Task Update(int id, Booking booking);
+        Task<Booking> FinishBooking(Booking booking);
     }
 }

@@ -15,5 +15,6 @@ namespace BLL.IServices
         Task Update(User userParam, string password = null);
         Task Delete(int id);
         Task<IEnumerable<Booking>> GetBookings(int id);
+      //  Task<Booking> FinishBooking(Booking booking);
     }
 }

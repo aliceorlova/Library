@@ -145,5 +145,7 @@ namespace BLL.Services
             var res = bookings.Where(b => b.User.UserId == id);
             return mapper.Map<IEnumerable<Booking>>(res);
         }
+
+      
     }
 }
