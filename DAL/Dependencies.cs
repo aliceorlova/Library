@@ -21,7 +21,7 @@ namespace DAL
             services.AddScoped<IBookRepository, BookRepository>();
             services.AddScoped<IRepository<BookAuthor>,Repository<BookAuthor>>();
             services.AddScoped<IRepository<BookGenre>,Repository<BookGenre>>();
-            services.AddScoped<IRepository<User>, Repository<User>>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IBookingRepository, BookingRepository>();
             
             Console.WriteLine("Dependency Injection from DAL");

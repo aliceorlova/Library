@@ -98,11 +98,17 @@ namespace DAL.Migrations
                     b.Property<int?>("BookId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("DateOfBeginning")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateOfReturn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsFinished")
+                        .HasColumnType("bit");
+
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("isFinished")
-                        .HasColumnType("bit");
 
                     b.HasKey("BookingId");
 

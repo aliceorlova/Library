@@ -4,6 +4,7 @@ using BLL.Models;
 using DAL.UOW;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,8 +24,11 @@ namespace BLL.Services
         {
             var bookDal = await _unitOfWork.BookRepository.GetBookById(booking.Book.BookId);
             if (bookDal.NumberAvailable == 0) throw new AppException("No books available.");
+            var bookings = await _unitOfWork.BookingRepository.GetBookings();
+            var res = bookings.Where(b => b.User.UserId == booking.User.UserId);
             var userDal = await _unitOfWork.UserRepository.GetById(booking.User.UserId);
-            if (userDal.Bookings.Count > 5) throw new AppException("Too many books."); // ???
+
+            if (res.Count() > 5) throw new AppException("Too many books.");
             if (userDal.isBlocked == true) throw new AppException("User is blocked.");
             var b = new DAL.Entities.Booking { Book = bookDal, User = userDal, IsFinished = false, DateOfBeginning = DateTime.Today, DateOfReturn = DateTime.Today.AddDays(30) };
             bookDal.NumberAvailable--;

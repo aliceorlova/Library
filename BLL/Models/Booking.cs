@@ -13,5 +13,8 @@ namespace BLL.Models
         [Required]
         public User User { get; set; }
         public bool isFinished { get; set; } = false;
+        public DateTime DateOfBeginning { get; set; }
+        public DateTime DateOfReturn { get; set; }
+
     }
 }

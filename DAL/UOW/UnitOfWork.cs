@@ -10,7 +10,7 @@ namespace DAL.UOW
     public class UnitOfWork : IUnitOfWork
     {
         private readonly AppContext context;
-        public IRepository<User> UserRepository { get; }
+        public IUserRepository UserRepository { get; }
         public IAuthorRepository AuthorRepository { get; }
 
         public IGenreRepository GenreRepository { get; }
@@ -24,7 +24,7 @@ namespace DAL.UOW
 
         public UnitOfWork(AppContext ac, IAuthorRepository authorRepository, IGenreRepository genreRepository,
            IBookRepository bookRepository, IRepository<BookAuthor> bookAuthorRepository, IRepository<BookGenre> bookGenreRepository,
-           IRepository<User> userRepository, IBookingRepository bookingRepository) 
+           IUserRepository userRepository, IBookingRepository bookingRepository) 
         {
             context = ac;
             AuthorRepository = authorRepository;

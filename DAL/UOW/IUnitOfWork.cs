@@ -10,7 +10,7 @@ namespace DAL.UOW
 {
     public interface IUnitOfWork
     {
-        IRepository<User> UserRepository { get; }
+        IUserRepository UserRepository { get; }
         IGenreRepository GenreRepository { get; }
         IBookRepository BookRepository { get; }
         IRepository<BookAuthor> BookAuthorRepository { get; }

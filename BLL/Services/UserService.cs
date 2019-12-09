@@ -13,18 +13,18 @@ namespace BLL.Services
 {
     class UserService : IUserService
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
         IMapper mapper;
         public UserService(IUnitOfWork uow, IMapper mapper)
         {
             this.mapper = mapper;
-            unitOfWork = uow;
+            _unitOfWork = uow;
         }
         public async Task<User> Authenticate(string username, string password)
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password)) return null;
 
-            var users = await unitOfWork.UserRepository.GetAll();
+            var users = await _unitOfWork.UserRepository.GetAll();
 
             var user = mapper.Map<User>(users.SingleOrDefault(x => x.Email == username));
 
@@ -41,8 +41,9 @@ namespace BLL.Services
         public async Task<User> Create(User user, string password)
         {
             // validation
-            if (string.IsNullOrWhiteSpace(password)) throw new AppException("Password is required");
-            if (unitOfWork.UserRepository.GetAll().Result.Any(u => u.Email == user.Email)) throw new AppException("Username \"" + user.Email + "\" is already taken");
+           // if (string.IsNullOrWhiteSpace(password)) throw new AppException("Password is required");
+            if (string.IsNullOrWhiteSpace(user.Email) && string.IsNullOrWhiteSpace(password) && string.IsNullOrWhiteSpace(user.FirstName) && string.IsNullOrWhiteSpace(user.LastName)) throw new AppException("Please fill in all the fields to register.");
+            if (_unitOfWork.UserRepository.GetAll().Result.Any(u => u.Email == user.Email)) throw new AppException("Username '" + user.Email + "' is already taken");
 
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
@@ -52,36 +53,36 @@ namespace BLL.Services
 
             var u = mapper.Map<DAL.Entities.User>(user);
 
-            unitOfWork.UserRepository.Create(u);
-            await unitOfWork.Save();
+            _unitOfWork.UserRepository.Create(u);
+            await _unitOfWork.Save();
 
             return mapper.Map<User>(u);
         }
 
         public async Task Delete(int id)
         {
-            var user = unitOfWork.UserRepository.GetById(id);
+            var user = _unitOfWork.UserRepository.GetById(id);
             if (user != null)
             {
-                unitOfWork.UserRepository.Delete(mapper.Map<DAL.Entities.User>(user));
-                await unitOfWork.Save();
+                _unitOfWork.UserRepository.Delete(mapper.Map<DAL.Entities.User>(user));
+                await _unitOfWork.Save();
             }
         }
 
         public async Task<IEnumerable<User>> GetAll()
         {
-            return mapper.Map<IEnumerable<User>>(await unitOfWork.UserRepository.GetAll());
+            return mapper.Map<IEnumerable<User>>(await _unitOfWork.UserRepository.GetUsers());
         }
 
         public async Task<User> GetById(int id)
         {
-            return mapper.Map<User>(await unitOfWork.UserRepository.GetById(id));
+            return mapper.Map<User>(await _unitOfWork.UserRepository.GetById(id));
         }
 
         public async Task Update(User userParam, string password = null)
         {
-            var user = await unitOfWork.UserRepository.GetById(userParam.UserId);
-            var users = await unitOfWork.UserRepository.GetAll();
+            var user = await _unitOfWork.UserRepository.GetById(userParam.UserId);
+            var users = await _unitOfWork.UserRepository.GetAll();
             if (user == null) throw new AppException("User not found");
 
             // update username if it has changed
@@ -140,8 +141,8 @@ namespace BLL.Services
 
         public async Task<IEnumerable<Booking>> GetBookings(int id)
         {
-            var bookings = await unitOfWork.BookingRepository.GetBookings();
-            if (bookings == null) throw new AppException("Null Bookings");
+            var bookings = await _unitOfWork.BookingRepository.GetBookings();
+            if (bookings == null) throw new AppException("No Bookings For You.");
             var res = bookings.Where(b => b.User.UserId == id);
             return mapper.Map<IEnumerable<Booking>>(res);
         }
