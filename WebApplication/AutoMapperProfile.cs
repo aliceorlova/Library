@@ -11,9 +11,10 @@ namespace WebApplication
     {
         public AutoMapperProfile()
         {
-          //  CreateMap<User, UserModel>();
+            CreateMap<BLL.Models.User, UserModel>();
             CreateMap<RegisterModel, BLL.Models.User>();
-          //  CreateMap<UpdateModel, User>();
+            CreateMap<UpdateModel, BLL.Models.User>();
+            CreateMap<UserModel, BLL.Models.User>();
         }
     }
 }

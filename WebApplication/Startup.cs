@@ -15,6 +15,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using BLL.IServices;
 using Microsoft.IdentityModel.Tokens;
+using AutoMapper;
 
 namespace WebApplication
 {
@@ -47,7 +48,8 @@ namespace WebApplication
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
-
+           
+           
             var appSettings = appSettingsSection.Get<AppSettings>();
 
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
@@ -97,8 +99,8 @@ namespace WebApplication
             app.UseHttpsRedirection();
 
             app.UseRouting();
-         //   app.UseMvc();
-
+            //   app.UseMvc();
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseCors("Default");
 

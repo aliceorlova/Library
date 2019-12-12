@@ -74,8 +74,9 @@ namespace WebApplication.Controllers
             try
             {
                 // create user
-                await _service.Create(user, model.Password);
-                return Ok();
+               var created = await _service.Create(user, model.Password);
+                // return Ok(_mapper.Map<UserModel>(user));
+                return Ok(_mapper.Map<UserModel>(created));
             }
             catch (BLL.AppException ex)
             {
@@ -85,40 +86,56 @@ namespace WebApplication.Controllers
         }
 
         // GET: api/Users
-        [AllowAnonymous]
+        [Authorize(Roles = Role.Admin)]
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
-            return Ok(await _service.GetAll());
+            var users = await _service.GetAll();
+            var models = _mapper.Map<IEnumerable<UserModel>>(users);
+            return Ok(models);
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<ActionResult> GetById(int id)
         {
-            return Ok(await _service.GetById(id));
+            var user = await _service.GetById(id);
+            var model = _mapper.Map<UserModel>(user);
+            return Ok(model);
         }
-        [AllowAnonymous]
+
         [HttpGet("{id}/GetBookings")]
         public async Task<ActionResult> GetBookings(int id)
         {
-            return Ok(await _service.GetBookings(id));
+            var user = await _service.GetById(id);
+            var model = _mapper.Map<UserModel>(user);
+            var bookings = await _service.GetBookings(id);
+            foreach (var b in bookings)
+            {
+                b.User = _mapper.Map<User>(model);
+            }
+            return Ok(bookings);
         }
 
-     /*   // POST: api/Users
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] BLL.Models.User user)
-        {
-            //   return Ok(await _service.(user));
-            return Ok();
-        }
-        */
+    
         // PUT: api/Users/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] BLL.Models.User user)
+        public async Task<IActionResult> Put(int id, [FromBody] UpdateModel model)
         {
-            await _service.Update(user);
-            return Ok();
+            var user = _mapper.Map<User>(model);
+            user.UserId = id;
+            try
+            {
+                // update user 
+                await _service.Update(user, model.Password);
+                return Ok();
+            }
+            catch (BLL.AppException ex)
+            {
+                // return error message if there was an exception
+                return BadRequest(new { message = ex.Message });
+            }
+
         }
 
         // DELETE: api/ApiWithActions/5

@@ -14,5 +14,7 @@ namespace BLL.Models
         public byte[] PasswordSalt { get; set; }
         public bool isBlocked { get; set; }
         public ICollection<Booking> Bookings { get; set; }
+
+      
     }
 }

@@ -26,7 +26,7 @@ namespace BLL.Services
 
             var users = await _unitOfWork.UserRepository.GetAll();
 
-            var user = mapper.Map<User>(users.SingleOrDefault(x => x.Email == username));
+            var user = mapper.Map<User>(users.SingleOrDefault(x => x.Email == username ));
 
             // check if username exists
             if (user == null) return null;
@@ -41,7 +41,6 @@ namespace BLL.Services
         public async Task<User> Create(User user, string password)
         {
             // validation
-           // if (string.IsNullOrWhiteSpace(password)) throw new AppException("Password is required");
             if (string.IsNullOrWhiteSpace(user.Email) && string.IsNullOrWhiteSpace(password) && string.IsNullOrWhiteSpace(user.FirstName) && string.IsNullOrWhiteSpace(user.LastName)) throw new AppException("Please fill in all the fields to register.");
             if (_unitOfWork.UserRepository.GetAll().Result.Any(u => u.Email == user.Email)) throw new AppException("Username '" + user.Email + "' is already taken");
 
@@ -108,6 +107,8 @@ namespace BLL.Services
                 user.PasswordHash = passwordHash;
                 user.PasswordSalt = passwordSalt;
             }
+            _unitOfWork.UserRepository.Update(user);
+            await _unitOfWork.Save();
         }
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {

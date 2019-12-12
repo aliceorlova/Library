@@ -124,3 +124,4 @@ F:\Desktop\WebApp\WebApplication\bin\Debug\netcoreapp3.0\Microsoft.AspNetCore.Au
 F:\Desktop\WebApp\WebApplication\bin\Debug\netcoreapp3.0\Microsoft.IdentityModel.Protocols.dll
 F:\Desktop\WebApp\WebApplication\bin\Debug\netcoreapp3.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 F:\Desktop\WebApp\WebApplication\bin\Debug\netcoreapp3.0\Microsoft.EntityFrameworkCore.Design.dll
+F:\Desktop\WebApp\WebApplication\bin\Debug\netcoreapp3.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
