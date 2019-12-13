@@ -2710,7 +2710,8 @@
         "dependencies": {
           "AutoMapper": "9.0.0",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "6.0.0",
-          "DAL": "1.0.0"
+          "DAL": "1.0.0",
+          "System.IdentityModel.Tokens.Jwt": "5.6.0"
         },
         "compile": {
           "bin/placeholder/BLL.dll": {}

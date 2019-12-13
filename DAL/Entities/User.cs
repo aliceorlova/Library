@@ -17,5 +17,6 @@ namespace DAL.Entities
         public byte[] PasswordSalt { get; set; }
         public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
         public bool isBlocked { get; set; } = false;
+        public string Role { get; set; }
     }
 }

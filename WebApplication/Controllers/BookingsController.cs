@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using BLL.IServices;
 using Microsoft.AspNetCore.Authorization;
+using WebApplication.AuthModels;
 
 namespace WebApplication.Controllers
 {
@@ -32,15 +33,18 @@ namespace WebApplication.Controllers
             return Ok(await _service.GetById(id));
         }
 
-        
-        [HttpPost("/ManageBookings")]
-        [Authorize("Manager")]
+
+
+        [Authorize(Roles = "Manager,Admin")]
+        [HttpPut("ManageBookings")]
         public async Task<IActionResult> FinishBooking([FromBody] BLL.Models.Booking booking)
         {
             return Ok(await _service.FinishBooking(booking));
         }
 
         // POST: api/Bookings
+        [Authorize(Roles = "Manager,Admin")]
+      //  [Authorize(Roles = Role.Manager)]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] BLL.Models.Booking booking)
         {

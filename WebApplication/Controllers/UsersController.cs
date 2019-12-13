@@ -23,12 +23,12 @@ namespace WebApplication.Controllers
     public class UsersController : ControllerBase
     {
         private IUserService _service;
-        private readonly AppSettings _appSettings;
+      //  private readonly AppSettings _appSettings;
         private IMapper _mapper;
-        public UsersController(IUserService service, IOptions<AppSettings> appSettings, IMapper mapper)
+        public UsersController(IUserService service /* , IOptions<AppSettings> appSettings */, IMapper mapper)
         {
             _service = service;
-            _appSettings = appSettings.Value;
+           // _appSettings = appSettings.Value;
             _mapper = mapper;
         }
 
@@ -39,21 +39,7 @@ namespace WebApplication.Controllers
             var user = await _service.Authenticate(model.Email, model.Password);
 
             if (user == null) return BadRequest(new { message = "Username or password is incorrect" });
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, user.UserId.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
-
+          
             // return basic user info and authentication token
             return Ok(new
             {
@@ -61,7 +47,8 @@ namespace WebApplication.Controllers
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Token = tokenString
+                Token = user.Token,
+                Role = user.Role
             });
         }
 
@@ -73,6 +60,7 @@ namespace WebApplication.Controllers
             var user = _mapper.Map<User>(model);
             try
             {
+                user.Role = Role.User;
                 // create user
                var created = await _service.Create(user, model.Password);
                 // return Ok(_mapper.Map<UserModel>(user));
@@ -99,21 +87,29 @@ namespace WebApplication.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetById(int id)
         {
+            var currentUserId = int.Parse(User.Identity.Name);
+            if (id != currentUserId && !User.IsInRole(Role.Admin)) return Forbid();
             var user = await _service.GetById(id);
+            if (user == null) return NotFound();
             var model = _mapper.Map<UserModel>(user);
             return Ok(model);
         }
 
+
         [HttpGet("{id}/GetBookings")]
         public async Task<ActionResult> GetBookings(int id)
         {
+            var currentUserId = int.Parse(User.Identity.Name);
+            if( id != currentUserId && !User.IsInRole(Role.Admin)) return Forbid();
             var user = await _service.GetById(id);
+            if (user == null) return NotFound();
             var model = _mapper.Map<UserModel>(user);
             var bookings = await _service.GetBookings(id);
             foreach (var b in bookings)
             {
-                b.User = _mapper.Map<User>(model);
+                 b.User = _mapper.Map<User>(model);
             }
+            
             return Ok(bookings);
         }
 
@@ -136,6 +132,27 @@ namespace WebApplication.Controllers
                 return BadRequest(new { message = ex.Message });
             }
 
+        }
+
+        [Authorize(Roles = Role.Admin)]
+        [HttpPatch]
+        public async Task<IActionResult> AssignRole([FromBody]PatchUserRole user)
+        {
+            var existing = await _service.GetById(user.UserId);
+            if(existing == null) return NotFound();
+            if (user.Role == Role.User && existing.Role == Role.Manager) existing.Role = Role.User;
+            else if (user.Role == Role.Manager && existing.Role == Role.User) existing.Role = Role.Manager;
+            try
+            {
+                // update user 
+                await _service.AssignRole(existing);
+                return Ok(_mapper.Map<UserModel>(existing));
+            }
+            catch (BLL.AppException ex)
+            {
+                // return error message if there was an exception
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         // DELETE: api/ApiWithActions/5

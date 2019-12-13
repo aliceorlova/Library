@@ -13,6 +13,11 @@ namespace DAL.Repositories
     {
         public BookingRepository(AppContext context) : base(context) { }
 
+        public async Task<IEnumerable<Booking>> GetActiveBookings()
+        {
+            return await context.Bookings.Where(b => b.IsFinished != true).Include(a => a.Book).Include(a => a.User).ToListAsync();
+        }
+
         public async Task<Booking> GetBookingById(int id)
         {
             return await context.Bookings.Where(b => b.BookingId == id).Include(b => b.Book).Include(b => b.User).FirstAsync();

@@ -10,5 +10,6 @@ namespace DAL.IRepositories
     {
         public Task<IEnumerable<Booking>> GetBookings();
         public Task<Booking> GetBookingById(int id);
+        public Task<IEnumerable<Booking>> GetActiveBookings();
     }
 }

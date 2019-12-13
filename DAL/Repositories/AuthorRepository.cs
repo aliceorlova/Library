@@ -15,7 +15,7 @@ namespace DAL.Repositories
 
         public async Task<Author> GetAuthorById(int id)
         {
-            return await context.Authors.Where(a => a.AuthorId == id).Include(a => a.BookAuthors).ThenInclude(a => a.Author).FirstAsync();
+            return await context.Authors.Where(a => a.AuthorId == id).Include(a => a.BookAuthors).ThenInclude(a => a.Book).FirstAsync();
         }
 
         public async Task<IEnumerable<Author>> GetAuthors()

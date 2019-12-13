@@ -8,6 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace BLL.Services
 {
@@ -15,10 +19,22 @@ namespace BLL.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         IMapper mapper;
-        public UserService(IUnitOfWork uow, IMapper mapper)
+        readonly AppSettings _settings;
+        public UserService(IUnitOfWork uow, IMapper mapper, IOptions<AppSettings> appSettings)
         {
             this.mapper = mapper;
             _unitOfWork = uow;
+            _settings = appSettings.Value;
+        }
+        public async Task<User> AssignRole(User user)
+        {
+            var existing = await _unitOfWork.UserRepository.GetById(user.UserId);
+            if (existing == null) return null;
+            existing.Role = user.Role;
+            //   existing.Role = "Manager";
+            _unitOfWork.UserRepository.Update(existing);
+            await _unitOfWork.Save();
+            return mapper.Map<User>(existing);
         }
         public async Task<User> Authenticate(string username, string password)
         {
@@ -26,7 +42,7 @@ namespace BLL.Services
 
             var users = await _unitOfWork.UserRepository.GetAll();
 
-            var user = mapper.Map<User>(users.SingleOrDefault(x => x.Email == username ));
+            var user = mapper.Map<User>(users.SingleOrDefault(x => x.Email == username));
 
             // check if username exists
             if (user == null) return null;
@@ -34,6 +50,20 @@ namespace BLL.Services
             // check if password is correct
             if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt)) return null;
 
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_settings.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, user.UserId.ToString()),
+                    new Claim(ClaimTypes.Role, user.Role)
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            user.Token = tokenHandler.WriteToken(token);
             // authentication successful
             return user;
         }
@@ -70,12 +100,12 @@ namespace BLL.Services
 
         public async Task<IEnumerable<User>> GetAll()
         {
-            return mapper.Map<IEnumerable<User>>(await _unitOfWork.UserRepository.GetUsers());
+            return mapper.Map<IEnumerable<User>>(await _unitOfWork.UserRepository.GetUsers()).WithoutPasswords();
         }
 
         public async Task<User> GetById(int id)
         {
-            return mapper.Map<User>(await _unitOfWork.UserRepository.GetById(id));
+            return mapper.Map<User>(await _unitOfWork.UserRepository.GetById(id)).WithoutPassword();
         }
 
         public async Task Update(User userParam, string password = null)
@@ -148,6 +178,5 @@ namespace BLL.Services
             return mapper.Map<IEnumerable<Booking>>(res);
         }
 
-      
     }
 }

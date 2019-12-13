@@ -48,8 +48,17 @@ namespace WebApplication
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
-           
-           
+
+            /*   var admin = new AuthModels.UserModel
+         {
+                FirstName = Configuration.GetSection("UserSettings")["FirstName"],
+                LastName = Configuration.GetSection("UserSettings")["LastName"],
+                Email = Configuration.GetSection("UserSettings")["Email"],
+                Role = AuthModels.Role.Admin
+            };
+            string adminPassword = Configuration.GetSection("UserSettings")["Password"];
+            
+           */
             var appSettings = appSettingsSection.Get<AppSettings>();
 
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
@@ -102,6 +111,7 @@ namespace WebApplication
             //   app.UseMvc();
             app.UseAuthentication();
             app.UseAuthorization();
+
             app.UseCors("Default");
 
             app.UseEndpoints(endpoints =>

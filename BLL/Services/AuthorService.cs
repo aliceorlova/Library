@@ -35,7 +35,7 @@ namespace BLL.Services
         }
         public async Task<Author> GetById(int id)
         {
-            return mapper.Map<Author>(await unitOfWork.AuthorRepository.GetById(id));
+            return mapper.Map<Author>(await unitOfWork.AuthorRepository.GetAuthorById(id));
         }
         public async Task Delete(int id)
         {

@@ -46,25 +46,30 @@ namespace BLL.Services
 
         public async Task<Booking> FinishBooking(Booking booking)
         {
-            var existing = await _unitOfWork.BookingRepository.GetById(booking.BookingId);
-            if (existing == null) throw new AppException("The booking you are trying to update does not exist.");
-            var user = await _unitOfWork.UserRepository.GetById(booking.User.UserId);
-            var book = await _unitOfWork.BookRepository.GetBookById(booking.Book.BookId);
-            existing.DateOfReturn = DateTime.Today;
-            existing.IsFinished = true;
-            if (existing.DateOfReturn.CompareTo(DateTime.Today) > 0)
+            var bookingDal = await _unitOfWork.BookingRepository.GetById(booking.BookingId);
+            if (bookingDal == null) throw new AppException("The booking you are trying to update does not exist.");
+            var user = await _unitOfWork.UserRepository.GetById(bookingDal.User.UserId);
+            if (user == null) throw new AppException("USER NULL");
+
+            var book = await _unitOfWork.BookRepository.GetBookById(bookingDal.Book.BookId);
+            if (book == null) throw new AppException("BOOK NULL");
+
+            bookingDal.DateOfReturn = DateTime.Today;
+            bookingDal.IsFinished = true;
+            if (bookingDal.DateOfReturn.CompareTo(DateTime.Today) > 0)
             {
                 user.isBlocked = true;
             }
             book.NumberAvailable++;
-            user.Bookings.Remove(existing);
+           // user.Bookings.Remove(bookingDal);
+            _unitOfWork.BookingRepository.Update(bookingDal);
             await _unitOfWork.Save();
-            return _mapper.Map<Booking>(existing);
+            return _mapper.Map<Booking>(bookingDal);
         }
 
         public async Task<IEnumerable<Booking>> GetAll()
         {
-            return _mapper.Map<IEnumerable<Booking>>(await _unitOfWork.BookingRepository.GetBookings());
+            return _mapper.Map<IEnumerable<Booking>>(await _unitOfWork.BookingRepository.GetActiveBookings());
         }
 
         public async Task<Booking> GetById(int id)
@@ -78,7 +83,7 @@ namespace BLL.Services
             if (existing == null) throw new AppException("The booking you are trying to update does not exist.");
             existing.User = _mapper.Map<DAL.Entities.User>(booking.User);
             existing.Book = _mapper.Map<DAL.Entities.Book>(booking.Book);
-
+          //  existing.IsFinished
             _unitOfWork.BookingRepository.Update(existing);
             await _unitOfWork.Save();
         }
