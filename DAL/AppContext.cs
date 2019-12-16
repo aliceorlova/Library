@@ -1,20 +1,29 @@
 ﻿using DAL.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace DAL
 {
-    public class AppContext : DbContext
+    internal class AppContext : IdentityDbContext<AppUser, IdentityRole<int>, int>
     {
-        public AppContext(DbContextOptions<AppContext> options) : base(options) { }
+        public AppContext(DbContextOptions<AppContext> options) : base(options)
+        {
+          //  Database.EnsureDeleted();
+            // Database.EnsureCreated();
+            Database.Migrate();
+        }
         public DbSet<Author> Authors { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Book> Books { get; set; }
-        public DbSet<Booking> Bookings { get; set; } // is it needed though?
-        
+        public DbSet<Booking> Bookings { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<BookGenre>()
                 .HasKey(bg => new { bg.BookId, bg.GenreId });
             modelBuilder.Entity<BookGenre>()

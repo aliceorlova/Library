@@ -9,12 +9,12 @@ using DAL.IRepositories;
 
 namespace DAL.Repositories
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+    internal class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         protected AppContext context { get; set; }
         public Repository(AppContext context)
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException("context error ");
             this.context = context;
         }
         public void Create(TEntity entity)

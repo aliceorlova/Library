@@ -7,7 +7,7 @@ using DAL.IRepositories;
 
 namespace DAL.UOW
 {
-    public class UnitOfWork : IUnitOfWork
+    internal class UnitOfWork : IUnitOfWork
     {
         private readonly AppContext context;
         public IUserRepository UserRepository { get; }

@@ -19,8 +19,9 @@ namespace BLL
         {
             if (user == null) return null;
 
-            user.PasswordHash = null;
-            user.PasswordSalt = null;
+            //   user.PasswordHash = null;
+            //  user.PasswordSalt = null;
+             user.Password = null;
             return user;
         }
     }

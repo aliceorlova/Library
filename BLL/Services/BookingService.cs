@@ -25,12 +25,12 @@ namespace BLL.Services
             var bookDal = await _unitOfWork.BookRepository.GetBookById(booking.Book.BookId);
             if (bookDal.NumberAvailable == 0) throw new AppException("No books available.");
             var bookings = await _unitOfWork.BookingRepository.GetBookings();
-            var res = bookings.Where(b => b.User.UserId == booking.User.UserId);
-            var userDal = await _unitOfWork.UserRepository.GetById(booking.User.UserId);
+            var res = bookings.Where(b => b.AppUser.Id == booking.User.Id);
+            var userDal = await _unitOfWork.UserRepository.GetById(booking.User.Id);
 
             if (res.Count() > 5) throw new AppException("Too many books.");
             if (userDal.isBlocked == true) throw new AppException("User is blocked.");
-            var b = new DAL.Entities.Booking { Book = bookDal, User = userDal, IsFinished = false, DateOfBeginning = DateTime.Today, DateOfReturn = DateTime.Today.AddDays(30) };
+            var b = new DAL.Entities.Booking { Book = bookDal, AppUser = userDal, IsFinished = false, DateOfBeginning = DateTime.Today, DateOfReturn = DateTime.Today.AddDays(30) };
             bookDal.NumberAvailable--;
             userDal.Bookings.Add(b);
             _unitOfWork.BookingRepository.Create(b);
@@ -48,7 +48,7 @@ namespace BLL.Services
         {
             var bookingDal = await _unitOfWork.BookingRepository.GetById(booking.BookingId);
             if (bookingDal == null) throw new AppException("The booking you are trying to update does not exist.");
-            var user = await _unitOfWork.UserRepository.GetById(bookingDal.User.UserId);
+            var user = await _unitOfWork.UserRepository.GetById(bookingDal.AppUser.Id);
             if (user == null) throw new AppException("USER NULL");
 
             var book = await _unitOfWork.BookRepository.GetBookById(bookingDal.Book.BookId);
@@ -81,7 +81,7 @@ namespace BLL.Services
         {
             var existing = await _unitOfWork.BookingRepository.GetById(id);
             if (existing == null) throw new AppException("The booking you are trying to update does not exist.");
-            existing.User = _mapper.Map<DAL.Entities.User>(booking.User);
+            existing.AppUser = _mapper.Map<DAL.Entities.AppUser>(booking.User);
             existing.Book = _mapper.Map<DAL.Entities.Book>(booking.Book);
           //  existing.IsFinished
             _unitOfWork.BookingRepository.Update(existing);

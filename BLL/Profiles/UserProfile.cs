@@ -9,8 +9,8 @@ namespace BLL.Profiles
     {
         public UserProfile()
         {
-            CreateMap<DAL.Entities.User, Models.User>();
-            CreateMap<Models.User, DAL.Entities.User>();
+            CreateMap<DAL.Entities.AppUser, Models.User>();
+            CreateMap<Models.User, DAL.Entities.AppUser>();
         }
     }
 }

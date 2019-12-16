@@ -49,12 +49,12 @@ namespace DAL.Repositories
 
         public async Task<Book> GetBookById(int id)
         {
-            return await context.Books.Where(b => b.BookId == id).Include(b => b.BookAuthors).ThenInclude(a => a.Author).Include(b => b.BookGenres).ThenInclude(g => g.Genre).FirstAsync();
+            return await context.Set<Book>().Where(b => b.BookId == id).Include(b => b.BookAuthors).ThenInclude(a => a.Author).Include(b => b.BookGenres).ThenInclude(g => g.Genre).FirstAsync();
         }
 
         public async Task<IEnumerable<Book>> GetBooks()
         {
-            return await context.Books.Include(a => a.BookAuthors).ThenInclude(a => a.Author).Include(a => a.BookGenres).ThenInclude(a => a.Genre).ToListAsync();
+            return await context.Set<Book>().Include(a => a.BookAuthors).ThenInclude(a => a.Author).Include(a => a.BookGenres).ThenInclude(a => a.Genre).ToListAsync();
         }
     }
 }

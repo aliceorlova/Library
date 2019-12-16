@@ -15,12 +15,12 @@ namespace DAL.Repositories
 
         public async Task<Author> GetAuthorById(int id)
         {
-            return await context.Authors.Where(a => a.AuthorId == id).Include(a => a.BookAuthors).ThenInclude(a => a.Book).FirstAsync();
+            return await context.Set<Author>().Where(a => a.AuthorId == id).Include(a => a.BookAuthors).ThenInclude(a => a.Book).FirstAsync();
         }
 
         public async Task<IEnumerable<Author>> GetAuthors()
         {
-            return await context.Authors.Include(a => a.BookAuthors).ThenInclude(a => a.Book).ToListAsync();
+            return await context.Set<Author>().Include(a => a.BookAuthors).ThenInclude(a => a.Book).ToListAsync();
         }
     }
 }

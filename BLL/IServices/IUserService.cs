@@ -8,13 +8,14 @@ namespace BLL.IServices
 {
     public interface IUserService
     {
-        Task<User> Authenticate(string username, string password);
         Task<IEnumerable<User>> GetAll();
+        Task<User> Add(User user);
         Task<User> GetById(int id);
-        Task<User> Create(User user, string password);
         Task Update(User userParam, string password = null);
-        Task<User> AssignRole(User user);
+        Task<User> AssignRole(int id);
         Task Delete(int id);
         Task<IEnumerable<Booking>> GetBookings(int id);
+        Task CreateRoles();
+        Task<User> Login(User user);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using DAL.Entities;
 using DAL.IRepositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,12 +9,16 @@ using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
-    class UserRepository : Repository<User>, IUserRepository
+    class UserRepository : Repository<AppUser>, IUserRepository
     {
-        public UserRepository(AppContext context) : base(context) { }
-        public async Task<IEnumerable<User>> GetUsers()
+        public UserRepository(AppContext context) : base(context)
         {
-            return await context.Users.Include(a => a.Bookings).ToListAsync();
         }
+
+        public async Task<IEnumerable<AppUser>> GetUsers()
+        {
+            return await context.Set<AppUser>().Include(a => a.Bookings).ToListAsync();
+        }
+
     }
 }
