@@ -15,7 +15,8 @@ namespace BLL.IServices
         Task<User> AssignRole(int id);
         Task Delete(int id);
         Task<IEnumerable<Booking>> GetBookings(int id);
-        Task CreateRoles();
+        Task<IEnumerable<User>> GetCustomers();
+        Task<IEnumerable<User>> GetCustomersAndManagers();
         Task<User> Login(User user);
     }
 }

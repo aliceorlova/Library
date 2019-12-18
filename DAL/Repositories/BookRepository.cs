@@ -20,15 +20,15 @@ namespace DAL.Repositories
             context.Set<BookAuthor>().Add(new BookAuthor { Book = book, Author = a });
         }
 
-        public async Task AddAuthors(int id, ICollection<Author> authors)
-        {
-            var book = await GetById(id);
-            foreach (var author in authors)
-            {
-                Author a = await context.Set<Author>().FindAsync(author.AuthorId);
-                context.Set<BookAuthor>().Add(new BookAuthor { Book = book, Author = a });
-            }
-        }
+        //public async Task AddAuthors(int id, ICollection<Author> authors)
+        //{
+        //    var book = await GetById(id);
+        //    foreach (var author in authors)
+        //    {
+        //        Author a = await context.Set<Author>().FindAsync(author.AuthorId);
+        //        context.Set<BookAuthor>().Add(new BookAuthor { Book = book, Author = a });
+        //    }
+        //}
 
         public async Task AddGenre(int id, Genre genre)
         {
@@ -37,19 +37,19 @@ namespace DAL.Repositories
             context.Set<BookGenre>().Add(new BookGenre { Book = book, Genre = g });
         }
 
-        public async Task AddGenres(int id, ICollection<Genre> genres)
-        {
-            var book = await GetById(id);
-            foreach (var genre in genres)
-            {
-                Genre g = await context.Set<Genre>().FindAsync(genre.GenreId);
-                context.Set<BookGenre>().Add(new BookGenre { Book = book, Genre = g });
-            }
-        }
+        //public async Task AddGenres(int id, ICollection<Genre> genres)
+        //{
+        //    var book = await GetById(id);
+        //    foreach (var genre in genres)
+        //    {
+        //        Genre g = await context.Set<Genre>().FindAsync(genre.GenreId);
+        //        context.Set<BookGenre>().Add(new BookGenre { Book = book, Genre = g });
+        //    }
+        //}
 
         public async Task<Book> GetBookById(int id)
         {
-            return await context.Set<Book>().Where(b => b.BookId == id).Include(b => b.BookAuthors).ThenInclude(a => a.Author).Include(b => b.BookGenres).ThenInclude(g => g.Genre).FirstAsync();
+            return await context.Set<Book>().Where(b => b.BookId == id).Include(b => b.BookAuthors).ThenInclude(a => a.Author).Include(b => b.BookGenres).ThenInclude(g => g.Genre).SingleOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Book>> GetBooks()

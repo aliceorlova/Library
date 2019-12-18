@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,6 +20,9 @@ namespace DAL.Repositories
         {
             return await context.Set<AppUser>().Include(a => a.Bookings).ToListAsync();
         }
-
+        public async Task<IEnumerable<AppUser>> GetCustomers()
+        {
+            return await context.Set<AppUser>().Include(a => a.Bookings).ToListAsync();
+        }
     }
 }

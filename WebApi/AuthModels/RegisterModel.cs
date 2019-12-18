@@ -22,9 +22,9 @@ namespace WebApi.AuthModels
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Required]
-        [Compare("Password", ErrorMessage = "Passwords fo not match.")]
-        [DataType(DataType.Password)]
-        public string PasswordConfirm { get; set; }
+        //[Required]
+        //[Compare("Password", ErrorMessage = "Passwords fo not match.")]
+        //[DataType(DataType.Password)]
+        //public string PasswordConfirm { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using BLL.Services;
 using BLL.IServices;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApi.Controllers
 {
@@ -18,41 +19,44 @@ namespace WebApi.Controllers
         {
             this.service = service;
         }
-        // GET: api/Author
+        // GET: api/Authors
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
             return Ok(await service.GetAll());
         }
 
-        // GET: api/Author/5
+        // GET: api/Authors/5
         [HttpGet("{id}")]
         public async Task<ActionResult> GetById(int id)
         {
-            return Ok(await service.GetById(id));
+            var res = await service.GetById(id);
+            if (res == null) return new NotFoundResult();
+            else return Ok(res);
         }
 
-        // POST: api/Author
+        // POST: api/Authors
         [HttpPost]
+        [Authorize(Roles = "Manager,Admin")]
         public async Task<IActionResult> Post([FromBody] BLL.Models.Author author)
         {
             return Ok(await service.Add(author));
         }
 
-        // PUT: api/Author/5
+        // PUT: api/Authors/5
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] BLL.Models.Author author)
         {
-            await service.Update(id,author);
+            await service.Update(id, author);
             return Ok();
         }
 
         // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await service.Delete(id);
-            return Ok();
-        }
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> Delete(int id)
+        //{
+        //    await service.Delete(id);
+        //    return Ok();
+        //}
     }
 }

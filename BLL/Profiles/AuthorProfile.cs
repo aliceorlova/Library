@@ -11,6 +11,7 @@ namespace BLL
         {
             CreateMap<DAL.Entities.Author,Models.Author>();
             CreateMap<Models.Author, DAL.Entities.Author>();
+          //  CreateMap<IEnum>
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BLL.IServices;
 using BLL.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,11 +30,14 @@ namespace WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetById(int id)
         {
-            return Ok(await service.GetById(id));
+            var res = await service.GetById(id);
+            if (res == null) return new NotFoundResult();
+            else return Ok(res);
         }
 
         // POST: api/Genres
         [HttpPost]
+        [Authorize(Roles = "Manager,Admin")]
         public async Task<IActionResult> Post([FromBody] BLL.Models.Genre genre)
         {
             return Ok(await service.Add(genre));
@@ -41,6 +45,7 @@ namespace WebApi.Controllers
 
         // PUT: api/Genres/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "Manager,Admin")]
         public async Task<IActionResult> Put(int id, [FromBody] BLL.Models.Genre genre)
         {
             await service.Update(id, genre);
@@ -48,11 +53,11 @@ namespace WebApi.Controllers
         }
 
         // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await service.Delete(id);
-            return Ok();
-        }
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> Delete(int id)
+        //{
+        //    await service.Delete(id);
+        //    return Ok();
+        //}
     }
 }

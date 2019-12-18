@@ -174,9 +174,6 @@ namespace DAL.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("AppUserId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("BookId")
                         .HasColumnType("int");
 
@@ -189,11 +186,14 @@ namespace DAL.Migrations
                     b.Property<bool>("IsFinished")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("BookingId");
 
-                    b.HasIndex("AppUserId");
-
                     b.HasIndex("BookId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Bookings");
                 });
@@ -375,13 +375,13 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Entities.Booking", b =>
                 {
-                    b.HasOne("DAL.Entities.AppUser", "AppUser")
-                        .WithMany("Bookings")
-                        .HasForeignKey("AppUserId");
-
                     b.HasOne("DAL.Entities.Book", "Book")
                         .WithMany()
                         .HasForeignKey("BookId");
+
+                    b.HasOne("DAL.Entities.AppUser", "User")
+                        .WithMany("Bookings")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

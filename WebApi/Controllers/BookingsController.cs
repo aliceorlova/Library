@@ -25,26 +25,32 @@ namespace WebApi.Controllers
         {
             return Ok(await _service.GetAll());
         }
-
+        [HttpGet("GetAllActive")]
+        public async Task<ActionResult> GetAllActive()
+        {
+            return Ok(await _service.GetAllActive());
+        }
         // GET: api/Bookings/5
         [HttpGet("{id}")]
         public async Task<ActionResult> GetById(int id)
         {
-            return Ok(await _service.GetById(id));
+            var res = await _service.GetById(id);
+            if (res == null) return new NotFoundResult();
+            else return Ok(res);
         }
 
 
 
         [Authorize(Roles = "Manager,Admin")]
-        [HttpPut("ManageBookings")]
-        public async Task<IActionResult> FinishBooking([FromBody] BLL.Models.Booking booking)
+        [HttpPut("{id}/FinishBooking")]
+        public async Task<IActionResult> FinishBooking(int id)
         {
-            return Ok(await _service.FinishBooking(booking));
+            return Ok(await _service.FinishBooking(id));
         }
 
         // POST: api/Bookings
         [Authorize(Roles = "Manager,Admin")]
-      //  [Authorize(Roles = Role.Manager)]
+        //  [Authorize(Roles = Role.Manager)]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] BLL.Models.Booking booking)
         {
@@ -59,11 +65,11 @@ namespace WebApi.Controllers
             return Ok();
         }
         // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _service.Delete(id);
-            return Ok();
-        }
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> Delete(int id)
+        //{
+        //    await _service.Delete(id);
+        //    return Ok();
+        //}
     }
 }

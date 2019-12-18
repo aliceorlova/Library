@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using BLL.Services;
 using BLL.IServices;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = "Admin,Manager")]
     [ApiController]
     public class BooksController : ControllerBase
     {
@@ -20,6 +22,7 @@ namespace WebApi.Controllers
         }
         // GET: api/Author
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult> GetAll()
         {
             return Ok(await service.GetAll());
@@ -27,9 +30,12 @@ namespace WebApi.Controllers
 
         // GET: api/Books/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult> GetById(int id)
         {
-            return Ok(await service.GetById(id));
+            var res = await service.GetById(id);
+            if (res == null) return new NotFoundResult();
+            else return Ok(res);
         }
 
         // POST: api/Books
@@ -46,12 +52,12 @@ namespace WebApi.Controllers
             return Ok();
         }
 
-        [HttpPost("{id}/AddAuthors")]
-        public async Task<IActionResult> AddAuthors(int id, [FromBody] ICollection<BLL.Models.Author> authors)
-        {
-            await service.AddAuthors(id, authors);
-            return Ok();
-        }
+        //[HttpPost("{id}/AddAuthors")]
+        //public async Task<IActionResult> AddAuthors(int id, [FromBody] ICollection<BLL.Models.Author> authors)
+        //{
+        //    await service.AddAuthors(id, authors);
+        //    return Ok();
+        //}
         [HttpPost("{id}/AddGenre")]
         public async Task<IActionResult> AddGenre(int id, [FromBody] BLL.Models.Genre genre)
         {
@@ -59,12 +65,12 @@ namespace WebApi.Controllers
             return Ok();
         }
 
-        [HttpPost("{id}/AddGenres")]
-        public async Task<IActionResult> AddGenres(int id, [FromBody] ICollection<BLL.Models.Genre> genres)
-        {
-            await service.AddGenres(id, genres);
-            return Ok();
-        }
+        //[HttpPost("{id}/AddGenres")]
+        //public async Task<IActionResult> AddGenres(int id, [FromBody] ICollection<BLL.Models.Genre> genres)
+        //{
+        //    await service.AddGenres(id, genres);
+        //    return Ok();
+        //}
         // PUT: api/Books/5
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] BLL.Models.Book book)
@@ -74,11 +80,11 @@ namespace WebApi.Controllers
         }
 
         // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await service.Delete(id);
-            return Ok();
-        }
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> Delete(int id)
+        //{
+        //    await service.Delete(id);
+        //    return Ok();
+        //}
     }
 }

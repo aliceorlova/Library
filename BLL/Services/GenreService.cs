@@ -35,12 +35,12 @@ namespace BLL.Services
 
         public async Task<IEnumerable<Genre>> GetAll()
         {
-            return mapper.Map<IEnumerable<Genre>>(await unitOfWork.GenreRepository.GetAll());
+            return mapper.Map<IEnumerable<Genre>>(await unitOfWork.GenreRepository.GetGenres());
         }
 
         public async Task<Genre> GetById(int id)
         {
-            return mapper.Map<Genre>(await unitOfWork.GenreRepository.GetById(id));
+            return mapper.Map<Genre>(await unitOfWork.GenreRepository.GetGenreById(id));
         }
 
         public async Task Update(int id, Genre genre)

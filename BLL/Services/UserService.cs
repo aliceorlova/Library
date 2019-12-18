@@ -33,20 +33,7 @@ namespace BLL.Services
             _userManager = userManager;
             _roleManager = roleManager;
         }
-        public async Task CreateRoles()
-        {
-            string[] roleNames = { "Admin", "Manager", "Customer" };
-            foreach (var roleName in roleNames)
-            {
-                var roleExist = await _roleManager.RoleExistsAsync(roleName);
-                if (!roleExist)
-                {
-                    Console.WriteLine("Creating role " + roleName);
-                    var roleResult = await _roleManager.CreateAsync(new IdentityRole<int>(roleName));
-                }
-                else Console.WriteLine("Role " + roleName + " already exists.");
-            }
-        }
+
         public async Task<User> Add(User user)
         {
             var u = mapper.Map<DAL.Entities.AppUser>(user);
@@ -66,8 +53,18 @@ namespace BLL.Services
             var role = await _roleManager.FindByIdAsync(u.RoleId.ToString());
             if (role == null) throw new AppException("Somehow the role does not exist.");
             await _userManager.AddToRoleAsync(u, role.Name);
+            //  u.Id = user.Id;
             _unitOfWork.UserRepository.Create(u);
-            await _unitOfWork.Save();
+            try
+            {
+                await _unitOfWork.Save();
+            }
+            catch 
+            {
+                var r = mapper.Map<User>(u);
+                r.Role = role.Name;
+                return r;
+            }
             var result = mapper.Map<User>(u);
             result.Role = role.Name;
             return result;
@@ -174,7 +171,21 @@ namespace BLL.Services
         {
             return mapper.Map<User>(await _unitOfWork.UserRepository.GetById(id)).WithoutPassword();
         }
-
+        public async Task<IEnumerable<User>> GetCustomers()
+        {
+            var users = await _unitOfWork.UserRepository.GetUsers();
+            var role = await _roleManager.FindByNameAsync("Customer");
+            var res = users.Where(x => x.RoleId == role.Id);
+            IList<User> result = new List<User>();
+            foreach (var user in res)
+            {
+                //  var _role = await _roleManager.FindByIdAsync(user.RoleId.ToString());
+                var r = mapper.Map<User>(user);
+                r.Role = role.Name;
+                result.Add(r);
+            }
+            return result.WithoutPasswords();
+        }
         public async Task Update(User userParam, string password = null)
         {
 
@@ -183,12 +194,28 @@ namespace BLL.Services
 
         public async Task<IEnumerable<Booking>> GetBookings(int id)
         {
-            var bookings = await _unitOfWork.BookingRepository.GetBookings();
+            var bookings = await _unitOfWork.BookingRepository.GetActiveBookings();
             if (bookings == null) throw new AppException("No Bookings For You.");
-            var res = bookings.Where(b => b.AppUser.Id == id);
+            var res = bookings.Where(b => b.User.Id == id);
+            //  var res = bookings.Select(x => x.User.Id == id);
             return mapper.Map<IEnumerable<Booking>>(res);
         }
 
-
+        public async Task<IEnumerable<User>> GetCustomersAndManagers()
+        {
+            var users = await _unitOfWork.UserRepository.GetUsers();
+            var custRole = await _roleManager.FindByNameAsync("Customer");
+            var managerRole = await _roleManager.FindByNameAsync("Manager");
+            var res = users.Where(x => x.RoleId == custRole.Id || x.RoleId == managerRole.Id);
+            IList<User> result = new List<User>();
+            foreach (var user in res)
+            {
+                var role = await _roleManager.FindByIdAsync(user.RoleId.ToString());
+                var r = mapper.Map<User>(user);
+                r.Role = role.Name;
+                result.Add(r);
+            }
+            return result.WithoutPasswords();
+        }
     }
 }

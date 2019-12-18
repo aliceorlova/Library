@@ -32,11 +32,11 @@ namespace BLL.Services
             await unitOfWork.Save();
 
         }
-        public async Task AddAuthors(int id, ICollection<Author> authors)
-        {
-            await unitOfWork.BookRepository.AddAuthors(id, mapper.Map<ICollection<DAL.Entities.Author>>(authors));
-            await unitOfWork.Save();
-        }
+        //public async Task AddAuthors(int id, ICollection<Author> authors)
+        //{
+        //    await unitOfWork.BookRepository.AddAuthors(id, mapper.Map<ICollection<DAL.Entities.Author>>(authors));
+        //    await unitOfWork.Save();
+        //}
 
         public async Task AddGenre(int id, Genre genre)
         {
@@ -44,11 +44,11 @@ namespace BLL.Services
             await unitOfWork.Save();
         }
 
-        public async Task AddGenres(int id, ICollection<Genre> genres)
-        {
-            await unitOfWork.BookRepository.AddGenres(id, mapper.Map<ICollection<DAL.Entities.Genre>>(genres));
-            await unitOfWork.Save();
-        }
+        //public async Task AddGenres(int id, ICollection<Genre> genres)
+        //{
+        //    await unitOfWork.BookRepository.AddGenres(id, mapper.Map<ICollection<DAL.Entities.Genre>>(genres));
+        //    await unitOfWork.Save();
+        //}
 
         public async Task Delete(int id)
         {

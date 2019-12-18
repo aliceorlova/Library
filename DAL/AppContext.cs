@@ -10,9 +10,9 @@ namespace DAL
     {
         public AppContext(DbContextOptions<AppContext> options) : base(options)
         {
-          //  Database.EnsureDeleted();
-            // Database.EnsureCreated();
-            Database.Migrate();
+            //  Database.EnsureDeleted();
+            //  Database.EnsureCreated();
+            //   Database.Migrate();
         }
         public DbSet<Author> Authors { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }

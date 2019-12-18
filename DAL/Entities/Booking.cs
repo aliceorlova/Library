@@ -10,7 +10,7 @@ namespace DAL.Entities
         [Key]
         public int BookingId { get; set; }
         public Book Book { get; set; }
-        public AppUser AppUser { get; set; }
+        public AppUser User { get; set; }
         public bool IsFinished { get; set; }
         public DateTime DateOfBeginning { get; set; }
         public DateTime DateOfReturn { get; set; }

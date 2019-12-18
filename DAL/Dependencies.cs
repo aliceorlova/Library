@@ -19,16 +19,18 @@ namespace DAL
     {
         public static void RegisterDependencies(this IServiceCollection services, string con)
         {
+        
             services.AddTransient<IUnitOfWork, UnitOfWork>();
-            services.AddTransient<IAuthorRepository, AuthorRepository>();
-            services.AddTransient<IGenreRepository, GenreRepository>();
-            services.AddTransient<IBookRepository, BookRepository>();
-            services.AddTransient<IRepository<BookAuthor>, Repository<BookAuthor>>();
-            services.AddTransient<IRepository<BookGenre>, Repository<BookGenre>>();
-            services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<IBookingRepository, BookingRepository>();
+            services.AddScoped<IAuthorRepository, AuthorRepository>();
+            services.AddScoped<IGenreRepository, GenreRepository>();
+            services.AddScoped<IBookRepository, BookRepository>();
+            services.AddScoped<IRepository<BookAuthor>, Repository<BookAuthor>>();
+            services.AddScoped<IRepository<BookGenre>, Repository<BookGenre>>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IBookingRepository, BookingRepository>();
             Console.WriteLine("Dependency Injection from DAL");
-            services.AddDbContext<AppContext>(option => option.UseSqlServer(con), ServiceLifetime.Transient);
+
+            services.AddDbContext<AppContext>(option => option.UseSqlServer(con));
             services.AddIdentity<AppUser, IdentityRole<int>>().AddEntityFrameworkStores<AppContext>().AddDefaultTokenProviders();
         }
     }

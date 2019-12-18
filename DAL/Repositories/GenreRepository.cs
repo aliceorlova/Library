@@ -15,12 +15,12 @@ namespace DAL.Repositories
 
         public async Task<Genre> GetGenreById(int id)
         {
-            return await context.Set<Genre>().Where(a => a.GenreId == id).Include(a => a.BookGenres).ThenInclude(a => a.Genre).FirstAsync();
+            return await context.Set<Genre>().Where(a => a.GenreId == id).Include(a => a.BookGenres).ThenInclude(a => a.Book).SingleOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Genre>> GetGenres()
         {
-            return await context.Set<Genre>().AsNoTracking().Include(a => a.BookGenres).ThenInclude(a => a.Genre).ToListAsync();
+            return await context.Set<Genre>().AsNoTracking().Include(a => a.BookGenres).ThenInclude(a => a.Book).ToListAsync();
         }
     }
 }

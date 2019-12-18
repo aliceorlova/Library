@@ -14,6 +14,5 @@ namespace DAL.Entities
         public bool isBlocked { get; set; } = false;
         [ForeignKey("IdentityRole<int>")]
         public int RoleId { get; set; }
-        //   public Role Role { get; set; }
     }
 }

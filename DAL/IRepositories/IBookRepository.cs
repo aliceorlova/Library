@@ -11,8 +11,8 @@ namespace DAL.IRepositories
         public Task<IEnumerable<Book>> GetBooks();
         public Task<Book> GetBookById(int id);
         public Task AddAuthor(int id, Author author);
-        public Task AddAuthors(int id, ICollection<Author> authors);
+      //  public Task AddAuthors(int id, ICollection<Author> authors);
         public Task AddGenre(int id, Genre genre);
-        public Task AddGenres(int id, ICollection<Genre> genres);
+      //  public Task AddGenres(int id, ICollection<Genre> genres);
     }
 }

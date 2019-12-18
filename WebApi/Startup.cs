@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -38,6 +37,7 @@ namespace WebApi
             {
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
+
             services.AddMvc();
             services.AddCors(o => o.AddPolicy("Default", builder =>
             {
@@ -75,9 +75,24 @@ namespace WebApi
           });
 
         }
+        public async Task CreateRoles(IServiceProvider serviceProvider)
+        {
+            var _roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
+            string[] roleNames = { "Admin", "Manager", "Customer" };
+            foreach (var roleName in roleNames)
+            {
+                var roleExist = await _roleManager.RoleExistsAsync(roleName);
+                if (!roleExist)
+                {
+                    Console.WriteLine("Creating role " + roleName);
+                    var roleResult = await _roleManager.CreateAsync(new IdentityRole<int>(roleName));
+                }
+                else Console.WriteLine("Role " + roleName + " already exists.");
+            }
+        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider provider)
         {
             if (env.IsDevelopment())
             {
@@ -90,13 +105,14 @@ namespace WebApi
             //   app.UseMvc();
             app.UseAuthentication();
             app.UseAuthorization();
-
+            // app.UseIdentity();
             app.UseCors("Default");
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+            CreateRoles(provider).Wait();
         }
     }
 }

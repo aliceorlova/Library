@@ -8,5 +8,6 @@ namespace BLL.Models
     {
         public int GenreId { get; set; }
         public string Name { get; set; }
+        public ICollection<BookGenre> BookGenres { get; set; }
     }
 }
