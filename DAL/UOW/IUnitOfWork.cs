@@ -1,8 +1,4 @@
 ﻿using DAL.Entities;
-using DAL.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using DAL.IRepositories;
 
@@ -17,6 +13,6 @@ namespace DAL.UOW
         IRepository<BookGenre> BookGenreRepository { get; }
         IBookingRepository BookingRepository { get; }
         IAuthorRepository AuthorRepository { get; }
-        Task Save();
+        Task SaveAsync();
     }
 }

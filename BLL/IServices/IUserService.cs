@@ -1,22 +1,20 @@
 ﻿using BLL.Models;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BLL.IServices
 {
     public interface IUserService
     {
-        Task<IEnumerable<User>> GetAll();
-        Task<User> Add(User user);
-        Task<User> GetById(int id);
-        Task Update(User userParam, string password = null);
-        Task<User> AssignRole(int id);
-        Task Delete(int id);
-        Task<IEnumerable<Booking>> GetBookings(int id);
-        Task<IEnumerable<User>> GetCustomers();
-        Task<IEnumerable<User>> GetCustomersAndManagers();
-        Task<User> Login(User user);
+        Task<IEnumerable<User>> GetAllAsync();
+        Task<User> AddAsync(User user);
+        Task<User> GetByIdAsync(int id);
+        Task UpdateAsync(User userParam, string password = null);
+        Task<User> AssignRoleAsync(int id);
+        Task DeleteAsync(int id);
+        Task<IEnumerable<Booking>> GetBookingsAsync(int id);
+        Task<IEnumerable<User>> GetCustomersAsync();
+        Task<IEnumerable<User>> GetCustomersAndManagersAsync();
+        Task<User> LoginAsync(User user);
     }
 }

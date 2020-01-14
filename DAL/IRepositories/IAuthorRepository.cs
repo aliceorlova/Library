@@ -1,14 +1,13 @@
 ﻿using DAL.Entities;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DAL.IRepositories
 {
-    public interface IAuthorRepository:IRepository<Author>
+    public interface IAuthorRepository : IRepository<Author>
     {
-        public Task<IEnumerable<Author>> GetAuthors();
-        public Task<Author> GetAuthorById(int id); 
+        Task<IEnumerable<Author>> GetAuthorsAsync();
+        Task<Author> GetAuthorByIdAsync(int id);
+        Task<Author> GetByName(string firstName, string LastName);
     }
 }

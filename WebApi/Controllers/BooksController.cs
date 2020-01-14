@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using BLL.Services;
 using BLL.IServices;
 using Microsoft.AspNetCore.Authorization;
 
@@ -25,7 +20,7 @@ namespace WebApi.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> GetAll()
         {
-            return Ok(await service.GetAll());
+            return Ok(await service.GetAllAsync());
         }
 
         // GET: api/Books/5
@@ -33,7 +28,7 @@ namespace WebApi.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> GetById(int id)
         {
-            var res = await service.GetById(id);
+            var res = await service.GetByIdAsync(id);
             if (res == null) return new NotFoundResult();
             else return Ok(res);
         }
@@ -42,13 +37,13 @@ namespace WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] BLL.Models.Book book)
         {
-            return Ok(await service.Add(book));
+            return Ok(await service.AddAsync(book));
         }
 
         [HttpPost("{id}/AddAuthor")]
         public async Task<IActionResult> AddAuthor(int id, [FromBody] BLL.Models.Author author)
         {
-            await service.AddAuthor(id, author);
+            await service.AddAuthorAsync(id, author);
             return Ok();
         }
 
@@ -61,7 +56,7 @@ namespace WebApi.Controllers
         [HttpPost("{id}/AddGenre")]
         public async Task<IActionResult> AddGenre(int id, [FromBody] BLL.Models.Genre genre)
         {
-            await service.AddGenre(id, genre);
+            await service.AddGenreAsync(id, genre);
             return Ok();
         }
 
@@ -75,7 +70,7 @@ namespace WebApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] BLL.Models.Book book)
         {
-            await service.Update(id, book);
+            await service.UpdateAsync(id, book);
             return Ok();
         }
 

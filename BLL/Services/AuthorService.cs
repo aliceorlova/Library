@@ -2,56 +2,60 @@
 using BLL.IServices;
 using BLL.Models;
 using DAL.UOW;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BLL.Services
 {
     public class AuthorService : IAuthorService
     {
-        private readonly IUnitOfWork unitOfWork;
-        IMapper mapper;
+        readonly IUnitOfWork _unitOfWork;
+        IMapper _mapper;
         public AuthorService(IUnitOfWork uow, IMapper mapper)
         {
-            this.mapper = mapper;
-            unitOfWork = uow;
+            this._mapper = mapper;
+            _unitOfWork = uow;
         }
 
-        public async Task<Author> Add(Author author)
+        public async Task<Author> AddAsync(Author author)
         {
-            var a = mapper.Map<DAL.Entities.Author>(author);
-            unitOfWork.AuthorRepository.Create(a);
-            await unitOfWork.Save();
-            return mapper.Map<Author>(a);
+            var a = _mapper.Map<DAL.Entities.Author>(author);
+            var existing = await _unitOfWork.AuthorRepository.GetByName(a.FirstName, a.LastName);
+            if (existing != null) throw new AppException("Author with such full name already exists.");
+            _unitOfWork.AuthorRepository.Create(a);
+            await _unitOfWork.SaveAsync();
+            return _mapper.Map<Author>(a);
         }
 
-        public async Task<IEnumerable<Author>> GetAll()
+        public async Task<IEnumerable<Author>> GetAllAsync()
         {
-            return mapper.Map<IEnumerable<Author>>(await unitOfWork.AuthorRepository.GetAuthors());
+            return _mapper.Map<IEnumerable<Author>>(await _unitOfWork.AuthorRepository.GetAuthorsAsync());
 
         }
-        public async Task<Author> GetById(int id)
+        public async Task<Author> GetByIdAsync(int id)
         {
-            return mapper.Map<Author>(await unitOfWork.AuthorRepository.GetAuthorById(id));
+            if (id < 0) throw new AppException("Index can`t be less than 0.");
+            var existing = await _unitOfWork.AuthorRepository.GetAuthorByIdAsync(id);
+            if (existing == null) throw new AppException("Author with such id does not exist");
+            return _mapper.Map<Author>(existing);
         }
-        public async Task Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            unitOfWork.AuthorRepository.Delete(await unitOfWork.AuthorRepository.GetById(id));
-            await unitOfWork.Save();
+            var existing = await _unitOfWork.AuthorRepository.GetByIdAsync(id);
+            if (existing == null) throw new AppException("Author you are trying to delete does not exist.");
+            _unitOfWork.AuthorRepository.Delete(existing);
+            await _unitOfWork.SaveAsync();
         }
 
-        public async Task Update(int id, Author author)
+        public async Task UpdateAsync(int id, Author author)
         {
 
-            var existing = await unitOfWork.AuthorRepository.GetById(id);
-            //  if (existing== null) return error
+            var existing = await _unitOfWork.AuthorRepository.GetByIdAsync(id);
+            if (existing == null) throw new AppException("Author you are trying to update does not exist.");
             existing.FirstName = author.FirstName;
             existing.LastName = author.LastName;
-            unitOfWork.AuthorRepository.Update(existing);
-            await unitOfWork.Save();
+            _unitOfWork.AuthorRepository.Update(existing);
+            await _unitOfWork.SaveAsync();
         }
     }
 }

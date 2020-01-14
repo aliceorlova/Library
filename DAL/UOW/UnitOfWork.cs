@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using DAL.Entities;
 using DAL.IRepositories;
 
@@ -35,7 +32,7 @@ namespace DAL.UOW
             UserRepository = userRepository;
             BookingRepository = bookingRepository;
         }
-        public async Task Save()
+        public async Task SaveAsync()
         {
             await context.SaveChangesAsync();
         }

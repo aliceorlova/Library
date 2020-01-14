@@ -1,9 +1,7 @@
 ﻿using DAL.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DAL.IRepositories;
 
@@ -13,17 +11,17 @@ namespace DAL.Repositories
     {
         public BookingRepository(AppContext context) : base(context) { }
 
-        public async Task<IEnumerable<Booking>> GetActiveBookings()
+        public async Task<IEnumerable<Booking>> GetActiveBookingsAsync()
         {
             return await context.Set<Booking>().Where(b => b.IsFinished != true).Include(a => a.Book).Include(a => a.User).ToListAsync();
         }
 
-        public async Task<Booking> GetBookingById(int id)
+        public async Task<Booking> GetBookingByIdAsync(int id)
         {
             return await context.Set<Booking>().Where(b => b.BookingId == id).Include(b => b.Book).Include(b => b.User).SingleOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Booking>> GetBookings()
+        public async Task<IEnumerable<Booking>> GetBookingsAsync()
         {
             return await context.Set<Booking>().Include(a => a.Book).Include(a => a.User).ToListAsync();
         }

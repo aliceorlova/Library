@@ -1,21 +1,17 @@
 ﻿using BLL.Models;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BLL.IServices
 {
-   public interface IBookService
+    public interface IBookService
     {
-        public Task<IEnumerable<Book>> GetAll();
-        public Task<Book> GetById(int id);
-        public Task<Book> Add(Book book);
-     //   public Task AddAuthors(int id, ICollection<Author> authors);
-        public Task AddAuthor(int id, Author author);
-      //  public Task AddGenres(int id, ICollection<Genre> genres);
-        public Task AddGenre(int id, Genre genre);
-        Task Delete(int id);
-        Task Update(int id, Book book);
+        Task<IEnumerable<Book>> GetAllAsync();
+        Task<Book> GetByIdAsync(int id);
+        Task<Book> AddAsync(Book book);
+        Task AddAuthorAsync(int id, Author author);
+        Task AddGenreAsync(int id, Genre genre);
+        Task DeleteAsync(int id);
+        Task UpdateAsync(int id, Book book);
     }
 }

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace DAL.Entities
 {
-    /// <summary>
-    /// Create Linking table repositories
-    /// </summary>
     public class Book
     {
         [Key]

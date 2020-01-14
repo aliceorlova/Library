@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace DAL
 {
@@ -10,12 +9,10 @@ namespace DAL
     {
         public AppContext(DbContextOptions<AppContext> options) : base(options)
         {
-            //  Database.EnsureDeleted();
-            //  Database.EnsureCreated();
-            //   Database.Migrate();
+               Database.Migrate();
         }
         public DbSet<Author> Authors { get; set; }
-        public DbSet<AppUser> AppUsers { get; set; }
+       // public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<Booking> Bookings { get; set; }

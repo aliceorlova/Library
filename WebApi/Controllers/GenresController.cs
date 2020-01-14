@@ -23,14 +23,14 @@ namespace WebApi.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
-            return Ok(await service.GetAll());
+            return Ok(await service.GetAllAsync());
         }
 
         // GET: api/Genres/5
         [HttpGet("{id}")]
         public async Task<ActionResult> GetById(int id)
         {
-            var res = await service.GetById(id);
+            var res = await service.GetByIdAsync(id);
             if (res == null) return new NotFoundResult();
             else return Ok(res);
         }
@@ -40,7 +40,7 @@ namespace WebApi.Controllers
         [Authorize(Roles = "Manager,Admin")]
         public async Task<IActionResult> Post([FromBody] BLL.Models.Genre genre)
         {
-            return Ok(await service.Add(genre));
+            return Ok(await service.AddAsync(genre));
         }
 
         // PUT: api/Genres/5
@@ -48,7 +48,7 @@ namespace WebApi.Controllers
         [Authorize(Roles = "Manager,Admin")]
         public async Task<IActionResult> Put(int id, [FromBody] BLL.Models.Genre genre)
         {
-            await service.Update(id, genre);
+            await service.UpdateAsync(id, genre);
             return Ok();
         }
 

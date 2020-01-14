@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using BLL.IServices;
@@ -11,45 +9,52 @@ namespace BLL.Services
 {
     class GenreService : IGenreService
     {
-        private readonly IUnitOfWork unitOfWork;
-        IMapper mapper;
+        readonly IUnitOfWork _unitOfWork;
+        IMapper _mapper;
         public GenreService(IUnitOfWork uow, IMapper mapper)
         {
-            this.mapper = mapper;
-            unitOfWork = uow;
+            this._mapper = mapper;
+            _unitOfWork = uow;
         }
         
-        public async Task<Genre> Add(Genre genre)
+        public async Task<Genre> AddAsync(Genre genre)
         {
-            var a = mapper.Map<DAL.Entities.Genre>(genre);
-            unitOfWork.GenreRepository.Create(a);
-            await unitOfWork.Save();
-            return mapper.Map<Genre>(a);
+            var a = _mapper.Map<DAL.Entities.Genre>(genre);
+            var existing = await _unitOfWork.GenreRepository.GetByName(genre.Name);
+            if (existing != null) throw new AppException("Such genre already exists.");
+            _unitOfWork.GenreRepository.Create(a);
+            await _unitOfWork.SaveAsync();
+            return _mapper.Map<Genre>(a);
         }
 
-        public async Task Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            unitOfWork.GenreRepository.Delete(await unitOfWork.GenreRepository.GetById(id));
-            await unitOfWork.Save();
+            var existing = await _unitOfWork.GenreRepository.GetByIdAsync(id);
+            if (existing == null) throw new AppException("Can`t delete the genre. Wrong id.");
+            _unitOfWork.GenreRepository.Delete(existing);
+            await _unitOfWork.SaveAsync();
         }
 
-        public async Task<IEnumerable<Genre>> GetAll()
+        public async Task<IEnumerable<Genre>> GetAllAsync()
         {
-            return mapper.Map<IEnumerable<Genre>>(await unitOfWork.GenreRepository.GetGenres());
+            return _mapper.Map<IEnumerable<Genre>>(await _unitOfWork.GenreRepository.GetGenresAsync());
         }
 
-        public async Task<Genre> GetById(int id)
+        public async Task<Genre> GetByIdAsync(int id)
         {
-            return mapper.Map<Genre>(await unitOfWork.GenreRepository.GetGenreById(id));
+            if (id < 0) throw new AppException("Index can`t be less than 0.");
+            var existing = await _unitOfWork.GenreRepository.GetByIdAsync(id);
+            if (existing == null) throw new AppException("Genre with such id does not exist");
+            return _mapper.Map<Genre>(existing);
         }
 
-        public async Task Update(int id, Genre genre)
+        public async Task UpdateAsync(int id, Genre genre)
         {
-            var existing = await unitOfWork.GenreRepository.GetById(id);
-            //  if (existing== null) return error
+            var existing = await _unitOfWork.GenreRepository.GetByIdAsync(id);
+            if (existing == null) throw new AppException("Can`t update the genre. Wrong id.");
             existing.Name = genre.Name;
-            unitOfWork.GenreRepository.Update(existing);
-            await unitOfWork.Save();
+            _unitOfWork.GenreRepository.Update(existing);
+            await _unitOfWork.SaveAsync();
         }
     }
 }
