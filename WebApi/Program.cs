@@ -16,13 +16,6 @@ namespace WebApi
                 {
                     webBuilder.UseStartup<Startup>();
                 });
-                /*
-                
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-        Microsoft.AspNetCore.WebHost.CreateDefaultBuilder(args)
-            .UseUrls("http://*:5566")
-            .UseContentRoot(System.IO.Directory.GetCurrentDirectory())
-            .UseIISIntegration()
-            .UseStartup<Startup>();*/
+              
     }
 }

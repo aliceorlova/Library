@@ -119,6 +119,7 @@ namespace BLL.Services
                 var result = _mapper.Map<User>(user);
                 result.Token = tokenHandler.WriteToken(token);
                 result.Role = role.Name;
+                result.UserId = user.Id;
                 return result.WithoutPassword();
             }
             else throw new AppException("Could not login user.");
@@ -165,6 +166,7 @@ namespace BLL.Services
                 //  var _role = await _roleManager.FindByIdAsync(user.RoleId.ToString());
                 var r = _mapper.Map<User>(user);
                 r.Role = role.Name;
+                r.UserId = user.Id;
                 result.Add(r);
             }
             return result.WithoutPasswords();
@@ -198,6 +200,7 @@ namespace BLL.Services
                 var role = await _roleManager.FindByIdAsync(user.RoleId.ToString());
                 var r = _mapper.Map<User>(user);
                 r.Role = role.Name;
+                r.UserId = user.Id;
                 result.Add(r);
             }
             return result.WithoutPasswords();

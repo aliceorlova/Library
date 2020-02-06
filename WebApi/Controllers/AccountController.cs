@@ -45,11 +45,12 @@ namespace WebApi.Controllers
                 ///  throw new HttpResponseException(ex.Message, HttpStatusCode.BadRequest);
             }
         }
+
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}/AssignRole")]
         public async Task<IActionResult> AssignRole(int id)
         {
-            //   if (!User.IsInRole("Admin")) return Forbid();
+            if (!User.IsInRole("Admin")) return Forbid();
             var result = await _userService.AssignRoleAsync(id);
             return Ok(_mapper.Map<UserModel>(result));
         }
@@ -65,7 +66,7 @@ namespace WebApi.Controllers
             return Ok(result);
         }
 
-        //  [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = "Admin,Manager")]
         [HttpGet("{id}")]
         public async Task<ActionResult> GetById(int id)
         {

@@ -1,23 +1,16 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using BLL;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using BLL.IServices;
 using Microsoft.IdentityModel.Tokens;
-using AutoMapper;
-using WebApi.AuthModels;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using System.Runtime;
 
 namespace WebApi
 {
@@ -33,12 +26,14 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            Console.WriteLine("Is server GC? " + GCSettings.IsServerGC);
             services.AddControllers().AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
 
             services.AddMvc();
+          //  services.AddMvcCore().AddJsonFormatters(opt => opt.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddCors(o => o.AddPolicy("Default", builder =>
             {
                 builder.AllowAnyOrigin()
