@@ -30,8 +30,8 @@ namespace BLL.Services
         public async Task<IEnumerable<Author>> GetAllAsync()
         {
             return _mapper.Map<IEnumerable<Author>>(await _unitOfWork.AuthorRepository.GetAuthorsAsync());
-
         }
+
         public async Task<Author> GetByIdAsync(int id)
         {
             if (id < 0) throw new AppException("Index can`t be less than 0.");
@@ -49,7 +49,6 @@ namespace BLL.Services
 
         public async Task UpdateAsync(int id, Author author)
         {
-
             var existing = await _unitOfWork.AuthorRepository.GetByIdAsync(id);
             if (existing == null) throw new AppException("Author you are trying to update does not exist.");
             existing.FirstName = author.FirstName;

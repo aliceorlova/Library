@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BLL.Services
 {
-    class BookingService : IBookingService
+    public class BookingService : IBookingService
     {
         readonly IUnitOfWork _unitOfWork;
         IMapper _mapper;
@@ -28,7 +28,13 @@ namespace BLL.Services
 
             if (userDal.Bookings.Count > 5) throw new AppException("Too many books.");
             if (userDal.isBlocked == true) throw new AppException("User is blocked.");
-            var b = new DAL.Entities.Booking { Book = bookDal, User = userDal, IsFinished = false, DateOfBeginning = DateTime.Today, DateOfReturn = DateTime.Today.AddDays(30) };
+            var b = new DAL.Entities.Booking {
+                Book = bookDal, 
+                User = userDal, 
+                IsFinished = false, 
+                DateOfBeginning = DateTime.Today, 
+                DateOfReturn = DateTime.Today.AddDays(30) 
+            };
             bookDal.NumberAvailable--;
             userDal.Bookings.Add(b);
             

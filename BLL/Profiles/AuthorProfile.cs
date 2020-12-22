@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
  
 
-namespace BLL
+namespace BLL.Profiles
 {
     class AuthorProfile: Profile
     {

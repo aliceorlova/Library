@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
  
-namespace BLL
+namespace BLL.Profiles
 {
     class GenreProfile : Profile
     {

@@ -30,7 +30,15 @@ namespace WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetById(int id)
         {
-            var res = await service.GetByIdAsync(id);
+            BLL.Models.Genre res;
+            try
+            {
+                res = await service.GetByIdAsync(id);
+            }
+            catch 
+            {
+                return new NotFoundResult();
+            }
             if (res == null) return new NotFoundResult();
             else return Ok(res);
         }

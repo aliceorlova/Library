@@ -46,7 +46,7 @@ namespace BLL.Services
 
             u.UserName = user.Email;
             var res = await _userManager.CreateAsync(u, user.Password);
-            if (!res.Succeeded) throw new AppException("Error creating user");
+            if (!res.Succeeded) throw new AppException("User could not be created. Check all the fields.");
             var role = await _roleManager.FindByIdAsync(u.RoleId.ToString());
             if (role == null) throw new AppException("Somehow the role does not exist. This really should never ever get displayed.");
             u = await _userManager.FindByEmailAsync(u.Email);
@@ -56,7 +56,6 @@ namespace BLL.Services
             r.Role = role.Name;
             r.UserId = u.Id;
             return r;
-
         }
 
         public async Task<User> AssignRoleAsync(int id)
@@ -83,7 +82,6 @@ namespace BLL.Services
                 var role = await _roleManager.FindByNameAsync("Customer");
                 user.RoleId = role.Id;
                 await _userManager.UpdateAsync(user);
-
             }
 
             else throw new AppException("can't really fire admin :) ");
@@ -178,7 +176,6 @@ namespace BLL.Services
             var result = await _userManager.ChangePasswordAsync(user, userParam.Password, password);
             if (!result.Succeeded) throw new AppException("Something went wrong. Try again.");
         }
-
 
         public async Task<IEnumerable<Booking>> GetBookingsAsync(int id)
         {

@@ -15,14 +15,21 @@ namespace Tests
     {
         List<Author> authorsInMemoryDatabase;
         List<Genre> genresInMemoryDatabase;
+        List<Book> booksInMemoryDatabase;
+        List<Booking> bookingsInMemoryDatabase;
+
         Mock<IGenreRepository> _mockGenreRepository;
         Mock<IAuthorRepository> _mockAuthorRepository;
+        Mock<IBookingRepository> _mockBookingRepository;
+        Mock<IBookRepository> _mockBookRepository;
 
         [TestInitialize]
         public void Initialize()
         {
             _mockGenreRepository = new Mock<IGenreRepository>();
             _mockAuthorRepository = new Mock<IAuthorRepository>();
+            _mockBookingRepository = new Mock<IBookingRepository>();
+            _mockBookRepository = new Mock<IBookRepository>();
 
             genresInMemoryDatabase = new List<Genre>
             {
@@ -39,6 +46,118 @@ namespace Tests
                 new Author { AuthorId = 2, FirstName = "George", LastName = "Orwell" },
                 new Author { AuthorId = 3, FirstName = "Haruki", LastName = "Murakami" }
             };
+
+            booksInMemoryDatabase = new List<Book>
+            {
+                new Book { BookId = 1, Name = "book1", BookYear = 1998, NumberAvailable = 3},
+                new Book { BookId = 2, Name = "book2", BookYear = 2004, NumberAvailable = 5},
+                new Book { BookId = 3, Name = "book3", BookYear = 1889, NumberAvailable = 1},
+            };
+
+            bookingsInMemoryDatabase = new List<Booking>
+            {
+                new Booking { BookingId = 1,  Book = booksInMemoryDatabase.First(b => b.BookId == 1),  User = new AppUser{ Id = 1 }, IsFinished = false },
+                new Booking { BookingId = 2, Book = booksInMemoryDatabase.First(b => b.BookId == 2),  User = new AppUser{ Id = 2 }, IsFinished = false },
+                new Booking { BookingId = 3, Book = booksInMemoryDatabase.First(b => b.BookId == 3), User = new AppUser { Id = 3 }, IsFinished = true }
+            };
+        }
+
+        [ExpectedException(typeof(InvalidOperationException))]
+        [TestMethod]
+        public async Task GetBookingByIdAsync_ThrowsException_WhenBookingDoesNotExist()
+        {
+            _mockBookingRepository.Setup(x => x.GetBookingByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync((int i) => bookingsInMemoryDatabase.Single(b => b.BookingId == i));
+            var uow = new UnitOfWork();
+            uow.BookingRepository = _mockBookingRepository.Object;
+
+            await uow.BookingRepository.GetBookingByIdAsync(11);
+        }
+
+        [TestMethod]
+        [DataRow(1, 1)]
+        [DataRow(2, 2)]
+        [DataRow(3, 3)]
+        public async Task GetBookingByIdAsync_ReturnsExistingBook_WhenIdIsValid(int id, int bookId)
+        {
+            _mockBookingRepository.Setup(x => x.GetBookingByIdAsync(It.IsAny<int>()))
+                 .ReturnsAsync((int i) => bookingsInMemoryDatabase.Single(b => b.BookingId == i));
+            var uow = new UnitOfWork();
+            uow.BookingRepository = _mockBookingRepository.Object;
+
+            var validBooking = await uow.BookingRepository.GetBookingByIdAsync(id);
+
+            Assert.IsNotNull(validBooking);
+            Assert.AreEqual(id, validBooking.Book.BookId);
+        }
+
+        [TestMethod]
+        public async Task GetBookings_ReturnsExistingBookings()
+        {
+            _mockBookingRepository.Setup(x => x.GetBookingsAsync()).ReturnsAsync(bookingsInMemoryDatabase);
+            var uow = new UnitOfWork();
+            uow.BookingRepository = _mockBookingRepository.Object;
+
+            var validBookings = await uow.BookingRepository.GetBookingsAsync();
+
+            Assert.IsNotNull(validBookings);
+            Assert.AreEqual(3, validBookings.ToList().Count);
+        }
+
+        [TestMethod]
+        public async Task GetActiveBookings_ReturnsActiveBookings()
+        {
+            _mockBookingRepository.Setup(x => x.GetActiveBookingsAsync()).ReturnsAsync(bookingsInMemoryDatabase.Where(b => b.IsFinished == false));
+            var uow = new UnitOfWork();
+            uow.BookingRepository = _mockBookingRepository.Object;
+
+            var activeBookings = await uow.BookingRepository.GetActiveBookingsAsync();
+
+            Assert.IsNotNull(activeBookings);
+            Assert.AreEqual(2, activeBookings.ToList().Count);
+        }
+
+        [ExpectedException(typeof(InvalidOperationException))]
+        [TestMethod]
+        public async Task GetBookByIdAsync_ThrowsException_WhenBookDoesNotExist()
+        {
+            _mockBookRepository.Setup(x => x.GetBookByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync((int i) => booksInMemoryDatabase.Single(b => b.BookId == i));
+            var uow = new UnitOfWork();
+            uow.BookRepository = _mockBookRepository.Object;
+
+            await uow.BookRepository.GetBookByIdAsync(11);
+        }
+
+        [TestMethod]
+        [DataRow(1, "book1")]
+        [DataRow(2, "book2")]
+        [DataRow(3, "book3")]
+        public async Task GetBookByIdAsync_ReturnsExistingBook_WhenIdIsValid(int id, string name)
+        {
+            _mockBookRepository.Setup(x => x.GetBookByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync((int i) => booksInMemoryDatabase.Single(b => b.BookId == i));
+            var uow = new UnitOfWork();
+            uow.BookRepository = _mockBookRepository.Object;
+
+            var validBook = await uow.BookRepository.GetBookByIdAsync(id);
+
+            Assert.IsNotNull(validBook);
+            Assert.AreEqual(id, validBook.BookId);
+            Assert.AreEqual(name, validBook.Name);
+        }
+
+        [TestMethod]
+        public async Task GetBooks_ReturnsExistingBooks()
+        {
+            _mockBookRepository.Setup(x => x.GetBooksAsync()).ReturnsAsync(booksInMemoryDatabase);
+            var uow = new UnitOfWork();
+            uow.BookRepository = _mockBookRepository.Object;
+
+            var validBooks = await uow.BookRepository.GetBooksAsync();
+
+            Assert.IsNotNull(validBooks);
+            Assert.AreEqual(3, validBooks.ToList().Count);
         }
 
         [TestMethod]
@@ -148,7 +267,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public async Task GetAuthors_ReturnsExistingAuthor_WhenName()
+        public async Task GetAuthors_ReturnsExistingAuthors()
         {
             _mockAuthorRepository.Setup(x => x.GetAuthorsAsync()).ReturnsAsync(authorsInMemoryDatabase);
             var uow = new UnitOfWork();

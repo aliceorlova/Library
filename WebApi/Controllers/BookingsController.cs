@@ -44,7 +44,7 @@ namespace WebApi.Controllers
         }
 
         // POST: api/Bookings
-        [Authorize(Roles = "Manager,Admin")]
+       // [Authorize(Roles = "Manager,Admin")]
         //  [Authorize(Roles = Role.Manager)]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] BLL.Models.Booking booking)

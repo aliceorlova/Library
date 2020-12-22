@@ -7,16 +7,16 @@ using DAL.UOW;
 
 namespace BLL.Services
 {
-    class GenreService : IGenreService
+    public class GenreService : IGenreService
     {
         readonly IUnitOfWork _unitOfWork;
         IMapper _mapper;
         public GenreService(IUnitOfWork uow, IMapper mapper)
         {
-            this._mapper = mapper;
+            _mapper = mapper;
             _unitOfWork = uow;
         }
-        
+
         public async Task<Genre> AddAsync(Genre genre)
         {
             var a = _mapper.Map<DAL.Entities.Genre>(genre);

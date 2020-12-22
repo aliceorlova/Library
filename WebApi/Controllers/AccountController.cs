@@ -41,7 +41,7 @@ namespace WebApi.Controllers
             }
             catch (BLL.AppException ex)
             {
-                return BadRequest(ex.Message); ;
+                return BadRequest(ex.Message); 
                 ///  throw new HttpResponseException(ex.Message, HttpStatusCode.BadRequest);
             }
         }

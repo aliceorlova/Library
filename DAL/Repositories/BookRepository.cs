@@ -17,12 +17,14 @@ namespace DAL.Repositories
             Author a = await context.Set<Author>().FindAsync(author.AuthorId);
             context.Set<BookAuthor>().Add(new BookAuthor { Book = book, Author = a });
         }
+
         public async Task AddGenreAsync(int id, Genre genre)
         {
             var book = await GetByIdAsync(id);
             Genre g = await context.Set<Genre>().FindAsync(genre.GenreId);
             context.Set<BookGenre>().Add(new BookGenre { Book = book, Genre = g });
         }
+
         public async Task<Book> GetBookByIdAsync(int id)
         {
             return await context.Set<Book>().Where(b => b.BookId == id).Include(b => b.BookAuthors).ThenInclude(a => a.Author).Include(b => b.BookGenres).ThenInclude(g => g.Genre).SingleOrDefaultAsync();

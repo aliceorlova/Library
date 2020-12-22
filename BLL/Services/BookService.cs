@@ -11,11 +11,13 @@ namespace BLL.Services
     {
         readonly IUnitOfWork _unitOfWork;
         IMapper _mapper;
+
         public BookService(IUnitOfWork uow, IMapper mapper)
         {
-            this._mapper = mapper;
+            _mapper = mapper;
             _unitOfWork = uow;
         }
+
         public async Task<Book> AddAsync(Book book)
         {
             var b = _mapper.Map<DAL.Entities.Book>(book);
